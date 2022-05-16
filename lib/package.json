@@ -1,7 +1,7 @@
 {
   "name": "@xwlogger/logger",
   "version": "1.0.0",
-  "description": "Logger with some punch",
+  "description": "My dream logger with some sugar and some punch",
   "main": "dist/export.js",
   "license": "MIT",
   "private": false,
