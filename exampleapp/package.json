@@ -1,0 +1,16 @@
+{
+  "name": "exampleapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/mainapp.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "@xwlogger/logger": "../lib/"
+  }
+}

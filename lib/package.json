@@ -1,0 +1,15 @@
+{
+  "name": "@xwlogger/logger",
+  "version": "1.0.0",
+  "description": "Logger with some punch",
+  "main": "dist/export.js",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.33",
+    "typescript": "^4.6.4"
+  }
+}
