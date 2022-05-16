@@ -17,7 +17,7 @@ export type modifiers =
   | "onelinestart"
   | "onelineend"
   | "onelinemid"
-  | "args"
+  | "name-args" // not in arrow
   | "stacktop=";
 
 export type aggregators = "first=" | "every=" | "coolsec=";
