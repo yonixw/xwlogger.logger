@@ -1,3 +1,5 @@
+import { randomTag } from "./logger.utils";
+
 export enum LogLevels {
   VERBOSE = 0,
   LOG,
@@ -52,11 +54,18 @@ export class XWLogger {
 
   constructor() {}
 
-  init = (extra: { tag?: string } = {}) => {
+  init = (
+    extra: { tag?: string; parent?: XWLogger; parenttag?: string } = {}
+  ) => {
     if (extra.tag) {
       this.tag = extra.tag;
     } else {
-      // generate from parent or random no parent
+      if (!extra.parent && !extra.parenttag) {
+        this.tag = randomTag();
+      } else {
+        // TODO: next sibling from parent...
+        // if from sting .. add 'a?' instead of 'a'
+      }
     }
   };
 
@@ -68,6 +77,8 @@ export class XWLogger {
 
   job = (extra: {} = {}) => {};
   step = (extra: {} = {}) => {};
+
+  myTag = () => this.tag;
 
   verbose = (...args: any[]): number => {
     return -1;
