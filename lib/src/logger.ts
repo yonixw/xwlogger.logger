@@ -19,12 +19,22 @@ export type modifiers =
   | "onelinemid"
   | "name-args" // not in arrow
   | "stacktop=";
+export type ModifierItem = { modifier: modifiers; extra: string | null };
 
-export type aggregators = "first=" | "every=" | "coolsec=";
+export type aggregators =
+  | "first="
+  | "every="
+  | "sample="
+  | "coolsec="
+  | "coolmin="
+  | "coolhour=";
+export type AggregatorItem = { aggregator: aggregators; extra: string | null };
 
 export type filters = "start=" | "end=" | "has=" | "regex=";
+export type FilterItem = { filter: filters; extra: string | null };
 
 export type width = "auto" | "chars=";
+export type WidthItem = { width: aggregators; extra: string | null };
 
 export class XWLogger {
   tag = "";
@@ -32,21 +42,32 @@ export class XWLogger {
   brocount = 0;
   parent = null;
   mytreetags = "";
+  buffers: { [key: string]: string[] } = {
+    v: [],
+    l: [],
+    i: [],
+    w: [],
+    e: [],
+  };
 
   constructor() {}
 
-  init = (tag: string) => {
-    // if empty - radnom
+  init = (extra: { tag?: string } = {}) => {
+    if (extra.tag) {
+      this.tag = extra.tag;
+    } else {
+      // generate from parent or random no parent
+    }
   };
 
   confignow = () => {};
 
-  child = (tokenOnly: boolean = false) => {};
-  bro = (tokenOnly: boolean = false) => {};
-  clone = (tokenOnly: boolean = false) => {};
+  child = (extra: { tag?: string } = {}) => {};
+  bro = (extra: { tag?: string } = {}) => {};
+  clone = (extra: { tag?: string } = {}) => {};
 
-  job = (tokenOnly: boolean = false) => {};
-  step = (tokenOnly: boolean = false) => {};
+  job = (extra: {} = {}) => {};
+  step = (extra: {} = {}) => {};
 
   verbose = (...args: any[]): number => {
     return -1;
