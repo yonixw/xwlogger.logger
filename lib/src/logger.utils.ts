@@ -1,3 +1,9 @@
+/**
+ * **Pad a number with 0 if less than X chars**
+ * @param {string} str number in string form
+ * @param {number} count Numbers of min chars
+ * @returns {string} padded string
+ */
 export function padNum(str: string, count: number): string {
   // https://stackoverflow.com/a/29216917/1997873
   let padstr =

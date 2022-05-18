@@ -3,40 +3,89 @@ import { randomTag } from "./logger.utils";
 export enum LogLevels {
   VERBOSE = 0,
   LOG,
+  DEBUG,
   INFO,
   WARN,
   ERROR,
+  CRITICAL,
 }
 
-export type modifiers =
-  | "timestamp"
+export enum ConfigSources {
+  ENV = 0,
+  CLI,
+  TEMP_FILE,
+  HTTPS_EP,
+}
+
+export const SCOPE_DIVIDER = ";;;";
+
+export type Scopes =
+  | "all"
+  | "level=="
+  | "level.ge=="
+  | "level.le=="
+  | "child=="
+  | "bro=="
+  | "job=="
+  | "step==";
+export type ScopeItem = { scope: Scopes; extra: string | null };
+
+export type operations =
+  | "sync.log"
+  | "reconfig.sec=="
+  | "reconfig.min=="
+  | "reconfig.hour=="
+  | "conf.http==" // env, tmp and cli are known places
+  | "conf.http.head=="
+  | "conf.http.urlp==";
+export type OperationItem = { operation: operations; extra: string | null };
+
+export type targets =
+  | "console"
+  | "file=="
+  | "rotate.mb=="
+  | "rotate.gb=="
+  | "rotate.min=="
+  | "rotate.days=="
+  | "rotate.months=="
+  | "http.post"
+  | "header=="
+  | "url.param==";
+export type TargetsItem = { operation: operations; extra: string | null };
+
+export type metamodifiers =
+  | "full.time"
+  | "hm.time"
+  | "dmy.time"
   | "delta"
-  | "parentdelta"
-  | "linenum"
-  | "nocolor"
-  | "maskevery="
-  | "maskbound="
-  | "onelinestart"
-  | "onelineend"
-  | "onelinemid"
-  | "name-args" // not in arrow
-  | "stacktop=";
-export type ModifierItem = { modifier: modifiers; extra: string | null };
+  | "parent.delta"
+  | "line.num"
+  | "no.color"
+  | "mask.every=="
+  | "mask.bound=="
+  | "onelines.tart"
+  | "oneline.end"
+  | "oneline.mid"
+  | "name.args" // not in arrow
+  | "stack.top=="
+  | "max.cols==";
+export type MetaModifierItem = {
+  modifier: metamodifiers;
+  extra: string | null;
+};
 
-export type aggregators =
-  | "first="
-  | "every="
-  | "sample="
-  | "coolsec="
-  | "coolmin="
-  | "coolhour=";
-export type AggregatorItem = { aggregator: aggregators; extra: string | null };
-
-export type filters = "start=" | "end=" | "has=" | "regex=";
-export type FilterItem = { filter: filters; extra: string | null };
-
-export type width = "auto" | "chars=";
-export type WidthItem = { width: aggregators; extra: string | null };
+export type query =
+  | "first=="
+  | "every=="
+  | "sample==" // float like rand()=(0.00,1.00)
+  | "cool.sec=="
+  | "cool.min=="
+  | "cool.hour=="
+  | "start=="
+  | "end=="
+  | "has=="
+  | "regex==";
+export type QueryItem = { query: query; extra: string | null };
 
 export class XWLogger {
   tag = "";
@@ -47,20 +96,27 @@ export class XWLogger {
   buffers: { [key: string]: string[] } = {
     v: [],
     l: [],
+    d: [],
     i: [],
     w: [],
     e: [],
+    c: [],
   };
 
   constructor() {}
 
   init = (
-    extra: { tag?: string; parent?: XWLogger; parenttag?: string } = {}
+    extra: {
+      tag?: string;
+      parent?: XWLogger;
+      parenttag?: string;
+      brotag?: string;
+    } = {}
   ) => {
     if (extra.tag) {
       this.tag = extra.tag;
     } else {
-      if (!extra.parent && !extra.parenttag) {
+      if (!extra.parent && !extra.parenttag && !extra.brotag) {
         this.tag = randomTag();
       } else {
         // TODO: next sibling from parent...
@@ -88,6 +144,10 @@ export class XWLogger {
     return -1;
   };
 
+  debug = (...args: any[]): number => {
+    return -1;
+  };
+
   info = (...args: any[]): number => {
     return -1;
   };
@@ -100,11 +160,19 @@ export class XWLogger {
     return -1;
   };
 
+  critical = (...args: any[]): number => {
+    return -1;
+  };
+
   v = (...args: any[]): number => {
     return this.l(...args);
   };
 
   l = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  d = (...args: any[]): number => {
     return this.l(...args);
   };
 
@@ -117,6 +185,10 @@ export class XWLogger {
   };
 
   e = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  c = (...args: any[]): number => {
     return this.l(...args);
   };
 }
