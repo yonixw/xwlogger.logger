@@ -1,0 +1,14 @@
+tasks:
+  - name: lib-build
+    openIn: right
+    command: |
+      cd lib
+      yarn install
+      yarn build
+      yarn test
+  - name: example-build
+    openIn: right
+    command: |
+      cd exampleapp
+      yarn install
+      yarn start
