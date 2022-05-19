@@ -42,6 +42,7 @@ export type operations =
   | "conf.http==" // env, tmp and cli are known places
   | "conf.http.head=="
   | "conf.http.urlp=="
+  | "locale==" // default "en"
   | "all.env.secret" // from big len to small len
   | "print.all"
   | "print.errors"
@@ -97,7 +98,7 @@ export type query =
   | "bins=="; // for log g (group)
 export type QueryItem = { query: query; extra: string | null };
 
-export class XWLogger {
+export class XWLogger<T extends { [K in keyof T]: string }> {
   tag = "";
   childcount = 0;
   brocount = 0;
@@ -115,10 +116,12 @@ export class XWLogger {
 
   constructor() {}
 
+  // todo: string lib hard type
+
   init = (
     extra: {
       tag?: string;
-      parent?: XWLogger;
+      parent?: XWLogger<T>;
       parenttag?: string;
       brotag?: string;
     } = {}
@@ -146,13 +149,30 @@ export class XWLogger {
 
   myTag = () => this.tag;
 
-  root = (): XWLogger => {
+  root = (): XWLogger<T> => {
     return this;
   };
 
   addSecret = (s: string) => {};
 
   verbose = (...args: any[]): number => {
+    return -1;
+  };
+
+  logf = (...args: any[]): number => {
+    return -1;
+  };
+
+  logk = <K extends keyof T>(key: K, ...args: any[]): number => {
+    return -1;
+  };
+
+  log18 = <K extends keyof T>(
+    key: K,
+    params: { [key: string]: string },
+    ...args: any[]
+  ): number => {
+    //i18n text and {{params}}
     return -1;
   };
 
@@ -205,6 +225,34 @@ export class XWLogger {
   };
 
   c = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  vf = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  lf = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  df = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  ifmt = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  wf = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  ef = (...args: any[]): number => {
+    return this.l(...args);
+  };
+
+  cf = (...args: any[]): number => {
     return this.l(...args);
   };
 }
