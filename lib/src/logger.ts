@@ -17,13 +17,17 @@ export enum ConfigSources {
   HTTPS_EP,
 }
 
-export const SCOPE_DIVIDER = ";;;";
+export const SCOPE_DIVIDER = process.env.XWLOGGER_SCOPE_DIVIDER || ";;;";
+export const SECTION_DIVIDER = process.env.XWLOGGER_SECTION_DIVIDER || ";";
 
 export type Scopes =
   | "all"
   | "level=="
   | "level.ge=="
   | "level.le=="
+  | "depth=="
+  | "depth.ge=="
+  | "depth.le=="
   | "child=="
   | "bro=="
   | "job=="
@@ -37,7 +41,12 @@ export type operations =
   | "reconfig.hour=="
   | "conf.http==" // env, tmp and cli are known places
   | "conf.http.head=="
-  | "conf.http.urlp==";
+  | "conf.http.urlp=="
+  | "all.env.secret" // from big len to small len
+  | "print.all"
+  | "print.errors"
+  | "print.top==" // print under tag "xwmete.*"
+  | "print.bottom==";
 export type OperationItem = { operation: operations; extra: string | null };
 
 export type targets =
@@ -84,7 +93,8 @@ export type query =
   | "start=="
   | "end=="
   | "has=="
-  | "regex==";
+  | "regex=="
+  | "bins=="; // for log g (group)
 export type QueryItem = { query: query; extra: string | null };
 
 export class XWLogger {
@@ -135,6 +145,12 @@ export class XWLogger {
   step = (extra: {} = {}) => {};
 
   myTag = () => this.tag;
+
+  root = (): XWLogger => {
+    return this;
+  };
+
+  addSecret = (s: string) => {};
 
   verbose = (...args: any[]): number => {
     return -1;
