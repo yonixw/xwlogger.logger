@@ -35,15 +35,15 @@ export type Scopes =
 export type ScopeItem = { scope: Scopes; extra: string | null };
 
 export type operations =
-  | "sync.log"
-  | "reconfig.sec=="
+  | "sync.log"   // can be disabled for security reasons
+  | "reconfig.sec==" // minimum for security
   | "reconfig.min=="
   | "reconfig.hour=="
   | "conf.http==" // env, tmp and cli are known places
   | "conf.http.head=="
   | "conf.http.urlp=="
   | "locale==" // default "en"
-  | "all.env.secret" // from big len to small len
+  | "all.env.secret" // from big len to small len // can be enforced for security
   | "print.all"
   | "print.errors"
   | "print.top==" // print under tag "xwmete.*"
@@ -53,14 +53,16 @@ export type OperationItem = { operation: operations; extra: string | null };
 // Publish variants (like npm console only for debug, full for prod... or plugin bases..)
 export type targets =
   | "console"
-  | "local.server==" // 0.0.0.0 or 127.0.0.1 or :<port> or alltogether...
-  | "file=="
+  | "local.server==" // 0.0.0.0 or 127.0.0.1 or :<port> or alltogether... 
+      // will have local printed secret (never open)
+      // local api can enforce always "127.0.0.1" for security
+  | "file==" // max mb for security reasons...
   | "rotate.mb=="
   | "rotate.gb=="
   | "rotate.min=="
   | "rotate.days=="
   | "rotate.months=="
-  | "remote.http=="
+  | "remote.http==" // (whitelist of all possible EP api from code for security)
   | "header=="
   | "url.param==";
 export type TargetsItem = { operation: operations; extra: string | null };
@@ -96,7 +98,7 @@ export type query =
   | "start=="
   | "end=="
   | "has=="
-  | "regex=="
+  | "simpleregex==" // maybe simple only to avoid accidental DDOS?
   | "bins=="; // for log g (group)
 export type QueryItem = { query: query; extra: string | null };
 
