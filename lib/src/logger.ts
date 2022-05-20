@@ -50,15 +50,17 @@ export type operations =
   | "print.bottom==";
 export type OperationItem = { operation: operations; extra: string | null };
 
+// Publish variants (like npm console only for debug, full for prod... or plugin bases..)
 export type targets =
   | "console"
+  | "local.server==" // 0.0.0.0 or 127.0.0.1 or :<port> or alltogether...
   | "file=="
   | "rotate.mb=="
   | "rotate.gb=="
   | "rotate.min=="
   | "rotate.days=="
   | "rotate.months=="
-  | "http.post"
+  | "remote.http=="
   | "header=="
   | "url.param==";
 export type TargetsItem = { operation: operations; extra: string | null };
