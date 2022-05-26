@@ -12,6 +12,7 @@ const mainDict = {
   ERROR11: "Error2",
 };
 
+// @todo - How to make typescript use name and not all types in mouse hove? class?
 export const myLogPredefiend: { [key: string]: typeof mainDict } = {
   he: {
     ERROR_MAIN: "התרחשה שגיאה: {{error}}",
