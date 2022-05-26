@@ -5,6 +5,8 @@ export enum LogLevels {
   LOG,
   DEBUG,
   INFO,
+  SUCESS,
+  FAIL,
   WARN,
   ERROR,
   CRITICAL,
@@ -115,10 +117,13 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
   parent = null;
   mytreetags = "";
   buffers: { [key: string]: string[] } = {
+    // @todo Should we keep them seperated? to give error priority? - maybe just 3 with priority? Do poeple expect priority or sequence?
     v: [],
     l: [],
     d: [],
     i: [],
+    s: [],
+    f: [],
     w: [],
     e: [],
     c: [],
@@ -184,13 +189,15 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
 
   // todo add secret hash? with regex for performance finding?
 
-  // todo type literal: type = ${log/l/..error/e} + ${f/k/18/""}
+  // todo type literal: type = ${LogLevels=log/l/..error/e} + ${f/k/18/""}
 
   logf = (...args: any[]): number => {
+    // Same as String.Format if any...
     return -1;
   };
 
   logk = <K extends keyof T>(key: K, ...args: any[]): number => {
+    // i18 but no params
     return -1;
   };
 
