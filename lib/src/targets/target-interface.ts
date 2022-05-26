@@ -1,4 +1,5 @@
 export interface TargetInterface {
+  // @todo type literals = LogLevels + ()=>int
   verbose(...args: any[]): number;
   log(...args: any[]): number;
   debug(...args: any[]): number;

@@ -43,6 +43,8 @@ export type ScopeItem = { scope: Scopes; extra: string | null };
 
 export type operations =
   | "sync.log" // can be disabled for security reasons
+  | "priority=" // 0 1 2, imply not in sequence, to others
+  | "nosequence" // imply not in sequence, even same tag
   | "reconfig.sec==" // minimum for security
   | "reconfig.min=="
   | "reconfig.hour=="
@@ -116,17 +118,11 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
   brocount = 0;
   parent = null;
   mytreetags = "";
-  buffers: { [key: string]: string[] } = {
-    // @todo Should we keep them seperated? to give error priority? - maybe just 3 with priority? Do poeple expect priority or sequence?
-    v: [],
-    l: [],
-    d: [],
-    i: [],
-    s: [],
-    f: [],
-    w: [],
-    e: [],
-    c: [],
+  buffers: { [key: string]: { priority?: number; logitem: string }[] } = {
+    seq: [], // filter not call anything, not just not sending to target
+    priority0: [],
+    priority1: [],
+    priority2: [],
   };
   geti18Dict: (lang: string) => Promise<T | null> | null = () => null;
   i18Dict: T | null = null;
