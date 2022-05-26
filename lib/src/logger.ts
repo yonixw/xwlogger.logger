@@ -20,6 +20,8 @@ export enum ConfigSources {
 export const SCOPE_DIVIDER = process.env.XWLOGGER_SCOPE_DIVIDER || ";;;";
 export const SECTION_DIVIDER = process.env.XWLOGGER_SECTION_DIVIDER || ";";
 
+export type Plugins = "all" | "web" | "elastic" | "colors" | "localwebview";
+
 export type Scopes =
   | "all"
   | "level=="
@@ -35,7 +37,7 @@ export type Scopes =
 export type ScopeItem = { scope: Scopes; extra: string | null };
 
 export type operations =
-  | "sync.log"   // can be disabled for security reasons
+  | "sync.log" // can be disabled for security reasons
   | "reconfig.sec==" // minimum for security
   | "reconfig.min=="
   | "reconfig.hour=="
@@ -53,9 +55,9 @@ export type OperationItem = { operation: operations; extra: string | null };
 // Publish variants (like npm console only for debug, full for prod... or plugin bases..)
 export type targets =
   | "console"
-  | "local.server==" // 0.0.0.0 or 127.0.0.1 or :<port> or alltogether... 
-      // will have local printed secret (never open)
-      // local api can enforce always "127.0.0.1" for security
+  | "local.server==" // 0.0.0.0 or 127.0.0.1 or :<port> or alltogether...
+  // will have local printed secret (never open)
+  // local api can enforce always "127.0.0.1" for security
   | "file==" // max mb for security reasons...
   | "rotate.mb=="
   | "rotate.gb=="
