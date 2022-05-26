@@ -54,7 +54,8 @@ export type OperationItem = { operation: operations; extra: string | null };
 
 // Publish variants (like npm console only for debug, full for prod... or plugin bases..)
 export type targets =
-  | "console"
+  | "bash.console"
+  | "chrome.console"
   | "local.server==" // 0.0.0.0 or 127.0.0.1 or :<port> or alltogether...
   // will have local printed secret (never open)
   // local api can enforce always "127.0.0.1" for security
