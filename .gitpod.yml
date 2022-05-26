@@ -11,7 +11,7 @@ tasks:
   - name: example-build
     openIn: right
     command: |
-      cd exampleapp
+      cd exampleapp-ts
       gp sync-await mybuild
       yarn install
       yarn start

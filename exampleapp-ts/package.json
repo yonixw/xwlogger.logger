@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/mainapp.ts"
+    "start": "ts-node src/mainapp.ts",
+    "_reinstall": "yarn remove @xwlogger/logger && yarn add ../lib/",
+    "_install": "yarn add ../lib/"
   },
   "devDependencies": {
     "ts-node": "^10.7.0",
@@ -14,6 +16,8 @@
     "@xwlogger/logger": "../lib/"
   },
   "config": {
-    "xwlogger.plugins" : "plugin1 plugin @todo" 
+    "xwlogger": {
+      "plugins": "plugin1 plugin 123 @todo"
+    }
   }
 }
