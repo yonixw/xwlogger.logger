@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "@xwlogger/logger": "../lib/"
+  },
+  "config": {
+    "xwlogger.plugins" : "plugin1 plugin @todo" 
   }
 }
