@@ -11,16 +11,19 @@ export enum LogLevels {
 }
 
 export enum ConfigSources {
-  ENV = 0,
-  CLI,
-  TEMP_FILE,
-  HTTPS_EP,
+  // Least to most dynamic
+  CLI = 0,
+  HTTP_COOKIE, // Good for web
+  LOCAL_COOKIE, // Good for web local dev
+  ENV, // Good for Lambdas, not K8s
+  TEMP_FILE, // Good for SSH, K8s debug
+  HTTPS_EP, // Good for no session control
 }
 
-export const SCOPE_DIVIDER = process.env.XWLOGGER_SCOPE_DIVIDER || ";;;";
-export const SECTION_DIVIDER = process.env.XWLOGGER_SECTION_DIVIDER || ";";
+export const SCOPE_DIVIDER = "------6"; // Need to be url safe
+export const SECTION_DIVIDER = "---3";
 
-export type Plugins = "all" | "web" | "elastic" | "colors" | "localwebview";
+export type Plugins = "all" | "websend" | "elastic" | "colors" | "localwebview";
 
 export type Scopes =
   | "all"
@@ -84,7 +87,7 @@ export type metamodifiers =
   | "oneline.end"
   | "oneline.mid"
   | "name.args" // not in arrow
-  | "stack.top=="
+  | "stack.top==" // @todo consider WebWorker case
   | "max.cols==";
 export type MetaModifierItem = {
   modifier: metamodifiers;
@@ -120,6 +123,9 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
     e: [],
     c: [],
   };
+  geti18Dict: (lang: string) => Promise<T | null> | null = () => null;
+  i18Dict: T | null = null;
+  i18Lang: string = "en";
 
   constructor() {}
 
@@ -131,8 +137,18 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
       parent?: XWLogger<T>;
       parenttag?: string;
       brotag?: string;
+      geti18Dict?: (lang: string) => Promise<T | null> | null;
+      i18Dict?: T;
     } = {}
   ) => {
+    if (extra.geti18Dict) {
+      if (extra.i18Dict) {
+        this.i18Dict = extra.i18Dict;
+        this.geti18Dict = extra.geti18Dict;
+      } else {
+        this.geti18Dict = extra.geti18Dict;
+      }
+    }
     if (extra.tag) {
       this.tag = extra.tag;
     } else {
@@ -143,9 +159,13 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
         // if from sting .. add 'a?' instead of 'a'
       }
     }
+
+    return this;
   };
 
-  confignow = () => {};
+  confignow = async () => {
+    if (this.geti18Dict) this.i18Dict = await this.geti18Dict(this.i18Lang);
+  };
 
   child = (extra: { tag?: string } = {}) => {};
   bro = (extra: { tag?: string } = {}) => {};
@@ -162,9 +182,9 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
 
   addSecret = (s: string) => {};
 
-  verbose = (...args: any[]): number => {
-    return -1;
-  };
+  // todo add secret hash? with regex for performance finding?
+
+  // todo type literal: type = ${log/l/..error/e} + ${f/k/18/""}
 
   logf = (...args: any[]): number => {
     return -1;
@@ -176,7 +196,7 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
 
   log18 = <K extends keyof T>(
     key: K,
-    params: { [key: string]: string },
+    i18params: { [key: string]: any },
     ...args: any[]
   ): number => {
     //i18n text and {{params}}
@@ -185,81 +205,5 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
 
   log = (...args: any[]): number => {
     return -1;
-  };
-
-  debug = (...args: any[]): number => {
-    return -1;
-  };
-
-  info = (...args: any[]): number => {
-    return -1;
-  };
-
-  warn = (...args: any[]): number => {
-    return -1;
-  };
-
-  error = (...args: any[]): number => {
-    return -1;
-  };
-
-  critical = (...args: any[]): number => {
-    return -1;
-  };
-
-  v = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  l = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  d = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  i = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  w = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  e = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  c = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  vf = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  lf = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  df = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  ifmt = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  wf = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  ef = (...args: any[]): number => {
-    return this.l(...args);
-  };
-
-  cf = (...args: any[]): number => {
-    return this.l(...args);
   };
 }
