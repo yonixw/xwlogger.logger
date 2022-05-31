@@ -15,11 +15,11 @@ export enum LogLevels {
 export enum ConfigSources {
   // Least to most dynamic
   CLI = 0,
-  HTTP_COOKIE, // Good for web
+  JS_READONLY, // Web Prod
   LOCAL_COOKIE, // Good for web local dev
   ENV, // Good for Lambdas, not K8s
   TEMP_FILE, // Good for SSH, K8s debug
-  HTTPS_EP, // Good for no session control
+  HTTPS_JSON, // Good for no session control
 }
 
 export const SCOPE_DIVIDER = "------6"; // Need to be url safe
