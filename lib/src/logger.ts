@@ -41,6 +41,16 @@ export type Scopes =
   | "step==";
 export type ScopeItem = { scope: Scopes; extra: string | null };
 
+export type Security =
+  | "maxstring=="
+  | "whitelist==" // domainA;domainB;... for both targets and configs
+  | "no.sync"
+  | "env.mask==" // 0...N, max chars to show. 0 = all mask
+  | "local.server.bind==" // none, 127.0.0.1 , 0.0.0.0 - list;
+  | "file.max.mb=="
+  | "tag.max.items=="
+  | "max.prints.second=="; // anti-ddos?;
+
 export type operations =
   | "sync.log" // can be disabled for security reasons
   | "priority=" // 0 1 2, imply not in sequence, to others
@@ -55,7 +65,7 @@ export type operations =
   | "all.env.secret" // from big len to small len // can be enforced for security
   | "print.all"
   | "print.errors"
-  | "print.top==" // print under tag "xwmete.*"
+  | "print.top==" // print under tag "xwmeta.*"
   | "print.bottom==";
 export type OperationItem = { operation: operations; extra: string | null };
 
