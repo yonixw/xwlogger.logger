@@ -33,10 +33,21 @@ Some examples:
 
 1. **JS Read-Only** - Using JS at the top of the HTML page, you can create a read-only object. Which is like the CLI params in other env. This will make sure no 3rd party code can override any security definitions.
 
+Example code for setting a read-only `window.XWLoggerSecurity`:
+
+```js
+Object.defineProperty(window, "XWLoggerSecurity", {
+  enumarable: false,
+  configurable: false,
+  get: () => "<DEFENTITION HERE>",
+  set: (x) => console.log("XWLoggerSecurity Already defined!"),
+});
+```
+
 2. **JS Cookie** - In a web browser, you can update definitions using the cookie, either from a server with the `Set-Cookie` header or inside the page with JS code.
 
 3. **Process ENV** - The logger will also look for updated definitions in the Env. Env is sometimes as static as CLI params and needs a redeploy to change, but sometimes not, like in FaaS. In AWS, changing Env of a Lambda is 2 click process, and could use this to update. We don't apply this always security-wise as it is more prone to variations in deployment and maybe a big DevOps burden. Use CLI or JS Read-Only for security purposes.
 
 4. **File in `/tmp`** - Mostly for scenarios of a running process without the ability to change the CLI params and the Env. Like running docker containers, K8s pods and VM processes. It will override scopes in the HTTPS JSON since we guess you have more priority. As the HTTPS JSON is intended to be more prod oriented, and apply to a lot of processes at once.
 
-5. **HTTPS JSON** A JSON HTTPS URL with the defenitions. Can be a static file or generated based on request. It will always add to the security because we see it as the way DevOps control large deployments. But it will be overridden by local definitions to allow debugging in specific cases.
+5. **HTTPS JSON** A JSON HTTPS URL with the definitions. Can be a static file or generated based on request. It will always add to the security because we see it as the way DevOps control large deployments. But it will be overridden by local definitions to allow debugging in specific cases.
