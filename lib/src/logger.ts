@@ -43,17 +43,22 @@ export type ScopeItem = { scope: Scopes; extra: string | null };
 
 export type Security =
   | "maxstring=="
-  | "whitelist==" // domainA;domainB;... for both targets and configs
+  | "domains.wl==" // domainA;domainB;... for both targets and configs and good for any target checker
+  | "targets.wl==" // @todo exception and exit if 2 custom targets with same name! someone try hijacking!
+  | "no.eval.query"
   | "no.sync"
+  | "force.sync" // Good For lambda
   | "env.mask==" // 0...N, max chars to show. 0 = all mask
-  | "local.server.bind==" // none, 127.0.0.1 , 0.0.0.0 - list;
+  | "local.server.bind==" // none, 127.0.0.1 , 0.0.0.0 + PORT - list;
   | "file.max.mb=="
+  | "file.max.count=="
   | "tag.max.items=="
   | "max.prints.second=="; // anti-ddos?;
 
 export type operations =
-  | "sync.log" // can be disabled for security reasons
-  | "priority=" // 0 1 2, imply not in sequence, to others
+  | "sync.log" // can be disabled for security reasons // must for lambdas (no worker)
+  | "flush.time==" // interval for force sending logs (ignored by console)
+  | "priority==" // 0 1 2, imply not in sequence, to others
   | "nosequence" // imply not in sequence, even same tag
   | "reconfig.sec==" // minimum for security
   | "reconfig.min=="
@@ -82,6 +87,8 @@ export type targets =
   | "rotate.min=="
   | "rotate.days=="
   | "rotate.months=="
+  | "rotate.file.count=="
+  | "custom==" // custom plugin key in my global dict
   | "remote.http==" // (whitelist of all possible EP api from code for security)
   | "header=="
   | "url.param==";
@@ -101,7 +108,7 @@ export type metamodifiers =
   | "oneline.end"
   | "oneline.mid"
   | "name.args" // not in arrow
-  | "stack.top==" // @todo consider WebWorker case
+  | "stack.top==" // @todo consider WebWorker case, need to be calc on log call side
   | "max.cols==";
 export type MetaModifierItem = {
   modifier: metamodifiers;
@@ -109,6 +116,7 @@ export type MetaModifierItem = {
 };
 
 export type query =
+  | "base32.eval==" // if true
   | "first=="
   | "every=="
   | "sample==" // float like rand()=(0.00,1.00)
@@ -177,6 +185,11 @@ export class XWLogger<T extends { [K in keyof T]: string }> {
   confignow = async () => {
     if (this.geti18Dict) this.i18Dict = await this.geti18Dict(this.i18Lang);
   };
+
+  // @todo - don't create time to flush if no logs - for lambda
+  flushnow = () => {};
+
+  getDomainsWL = () => ["domain"]; // @todo, how custom plguin can get WL domains?
 
   child = (extra: { tag?: string } = {}) => {};
   bro = (extra: { tag?: string } = {}) => {};
