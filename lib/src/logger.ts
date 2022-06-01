@@ -68,6 +68,9 @@ export type operations =
   | "conf.http.urlp=="
   | "locale==" // default "en"
   | "all.env.secret" // from big len to small len // can be enforced for security
+  | "expire.min==" // expire and return to default.. good to limit log collection
+  | "expire.hours=="
+  | "expire.days=="
   | "print.all"
   | "print.errors"
   | "print.top==" // print under tag "xwmeta.*"
