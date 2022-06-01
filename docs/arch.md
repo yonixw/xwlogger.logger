@@ -6,6 +6,8 @@ Per scope relation of directives:
 
 Each block has defaults if not specified. And also a default logger with all default blocks for unspecified scopes.
 
+Security directives have no scope. They are applied to all scopes. They get replaced if changed. Like if the Env changed. See below for exceptions.
+
 # Security vs Priority
 
 When asking where to look for configuration, what goes first and last, and which place is more secure, we consider the following:
@@ -25,18 +27,18 @@ Some examples:
 
 - Because CLI always adds to security, given you use a security directive in a CLI flag, it will always apply, even if overwritten by a JS cookie or a local file in `tmp`
 - Because HTTP JSON is checked after the JS cookie, If a definition for a scope exists both in the JS cookie and in HTTP JSON, the JS cookie will be replaced by the latter.
-- Any CLI directive that has no security considerations, will be ignored by any other defenition found.
+- Any CLI directive that has no security considerations, will be ignored by any other definitions found.
 
-## Defenitions and Considerations:
+## Definitions and Considerations:
 
 0. **CLI Flags** - The most "close to code" you can get. If you can change those, you already control the code. So it will be the last line of security defense. On the other hand, it is also very hard to change without redeploying, so it will be replaced by any other definition.
 
 1. **JS Read-Only** - Using JS at the top of the HTML page, you can create a read-only object. Which is like the CLI params in other env. This will make sure no 3rd party code can override any security definitions.
 
-Example code for setting a read-only `window.XWLoggerSecurity`:
+Example code for setting a read-only `window.XYZ`:
 
 ```js
-Object.defineProperty(window, "XWLoggerSecurity", {
+Object.defineProperty(window, "XYZ", {
   enumarable: false,
   configurable: false,
   get: () => "<DEFENTITION HERE>",
