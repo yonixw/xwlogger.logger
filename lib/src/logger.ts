@@ -45,7 +45,6 @@ export type Security =
   | "maxstring=="
   | "domains.wl==" // domainA;domainB;... for both targets and configs and good for any target checker
   | "targets.wl==" // @todo exception and exit if 2 custom targets with same name! someone try hijacking!
-  | "no.eval.query"
   | "no.sync"
   | "force.sync" // Good For lambda
   | "env.mask==" // 0...N, max chars to show. 0 = all mask
@@ -119,7 +118,6 @@ export type MetaModifierItem = {
 };
 
 export type query =
-  | "base32.eval==" // if true
   | "first=="
   | "every=="
   | "sample==" // float like rand()=(0.00,1.00)
