@@ -96,27 +96,6 @@ export type targets =
   | "url.param==";
 export type TargetsItem = { operation: operations; extra: string | null };
 
-export type metamodifiers =
-  | "full.time"
-  | "hm.time"
-  | "dmy.time"
-  | "delta"
-  | "parent.delta"
-  | "line.num"
-  | "no.color"
-  | "mask.every=="
-  | "mask.bound=="
-  | "onelines.tart"
-  | "oneline.end"
-  | "oneline.mid"
-  | "name.args" // not in arrow
-  | "stack.top==" // @todo consider WebWorker case, need to be calc on log call side
-  | "max.cols==";
-export type MetaModifierItem = {
-  modifier: metamodifiers;
-  extra: string | null;
-};
-
 export type query =
   | "first=="
   | "every=="
