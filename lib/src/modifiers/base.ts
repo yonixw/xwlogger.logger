@@ -54,7 +54,7 @@ export const stacktrace = (stack: string, lines: number): string[] => {
 };
 
 // show last n chars at the end of astring with elipsis
-export const ellipsisEnd = (astring: string, n: number): string => {
+export const ellipsisStart = (astring: string, n: number): string => {
   n = n - 3;
   const len = astring.length;
   const start = Math.max(len - n, 0);
@@ -64,7 +64,7 @@ export const ellipsisEnd = (astring: string, n: number): string => {
 };
 
 // show first n chars at the start of astring with elipsis
-export const ellipsisStart = (astring: string, n: number): string => {
+export const ellipsisEnd = (astring: string, n: number): string => {
   n = n - 3;
   const len = astring.length;
   const start = 0;
