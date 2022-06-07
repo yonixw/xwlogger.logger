@@ -26,7 +26,12 @@ describe("Logger utils", () => {
   });
 
   test("randtag-date", () => {
-    const d = new Date(2022, 5 - 1, 17, 4, 29, 0, 0);
+    /* const d = new Date(2022, 5 - 1, 17, 4, 29, 0, 0);
+    if (d.getTimezoneOffset() != 0) {
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    } */
+    const d = new Date("2022-05-17T04:29:00.000Z");
+
     expect(randomTag(d, 0.5)).toBe("t--d170522.0429.00r0d6d8.a");
     expect(randomTag(d, 0.99)).toBe("t--d170522.0429.00r1831c.a");
   });
