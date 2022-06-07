@@ -1,4 +1,5 @@
 export type metamodifiers =
+  | "gmt=="
   | "full.time"
   | "hmsm.time"
   | "dmy.date"
@@ -21,25 +22,79 @@ export type MetaModifierItem = {
   extra: string | null;
 };
 
+// pad string with zeros
+export const pad = (
+  astring: string | number,
+  n: number,
+  char: string = "0"
+): string => {
+  const str = String(astring);
+  const len = str.length;
+  const pad = char.repeat(n - len);
+  const padded = pad + str;
+  return padded;
+};
+
+/**
+ *
+ * @param options utc - return in utc, otherwise return in local timezone
+ * @returns ISO date string
+ */
+export function fullISODate(options?: {
+  d?: Date;
+  utc?: boolean;
+  showDate?: boolean;
+  showTime?: boolean;
+}): string {
+  const d = options?.d ?? new Date();
+  const utc = options?.utc ?? false;
+  const showDate = options?.showDate ?? true;
+  const showTime = options?.showTime ?? true;
+
+  let tzo = -d.getTimezoneOffset();
+  let dif = tzo >= 0 ? "+" : "-";
+  if (utc) {
+    d.setMinutes(d.getMinutes() - tzo);
+    tzo = 0;
+    dif = "+";
+  }
+  const pad = function (num: number) {
+    return (num < 10 ? "0" : "") + num;
+  };
+
+  let date = "skip-date";
+  if (showDate) {
+    date =
+      d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+
+  let time = "skip-time";
+  if (showTime) {
+    time =
+      pad(d.getHours()) +
+      ":" +
+      pad(d.getMinutes()) +
+      ":" +
+      pad(d.getSeconds()) +
+      dif +
+      pad(Math.floor(Math.abs(tzo) / 60)) +
+      ":" +
+      pad(Math.abs(tzo) % 60);
+  }
+
+  return date + "T" + time;
+}
+
 // human readable time
-export const fasttime = (time: number): string => {
-  const d = new Date(time);
-  const h = d.getHours();
-  const m = d.getMinutes();
-  const s = d.getSeconds();
-  const ms = d.getMilliseconds();
-  const hms = `${h}:${m}:${s}.${ms}`;
-  return hms;
+export const fasttime = (time: number | Date): string => {
+  const d = typeof time == "number" ? new Date(time) : time;
+  return fullISODate({ d, showDate: false }).split("T")[1];
 };
 
 // human readable date
-export const fastdate = (time: number): string => {
-  const d = new Date(time);
-  const y = d.getFullYear();
-  const m = d.getMonth() + 1;
-  const dd = d.getDate();
-  const dmy = `${y}-${m}-${dd}`;
-  return dmy;
+export const fastdate = (time: number | Date): string => {
+  const d = typeof time == "number" ? new Date(time) : time;
+  return fullISODate({ d, showTime: false }).split("T")[0];
 };
 
 // print last lines from error  stacktrace
@@ -81,14 +136,6 @@ export const ellipsisMid = (astring: string, n: number): string => {
   const end = len;
   const ellipsis = "..." + astring.slice(start, end) + "...";
   return ellipsis;
-};
-
-// pad string with zeros
-export const pad = (astring: string, n: number, char: string = "0"): string => {
-  const len = astring.length;
-  const pad = char.repeat(n - len);
-  const padded = pad + astring;
-  return padded;
 };
 
 // add line number for multiline text
