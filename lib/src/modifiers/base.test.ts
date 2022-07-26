@@ -81,7 +81,6 @@ describe("Meta base utils", () => {
 
     // UTC ends with Z
     const datesUTC = [new Date("1990-05-03T05:06:00.000Z")];
-
     const expectedUTC = ["1990-05-03T05:06:00+00:00"];
 
     for (let i = 0; i < datesUTC.length; i++) {

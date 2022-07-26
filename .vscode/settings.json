@@ -4,5 +4,8 @@
             "language": "markdown",
             "scheme": "file"
         }
-    ]
+    ],
+    "jest.jestCommandLine": "./node_modules/.bin/jest",
+    "jest.rootPath": "./lib/"
+    
 }
