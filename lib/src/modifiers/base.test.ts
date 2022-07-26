@@ -6,6 +6,7 @@ import {
   fasttime,
   fullISODate,
 } from "./base";
+
 describe("Meta base utils", () => {
   // Array of 10 random short sentences
   const sentences = [

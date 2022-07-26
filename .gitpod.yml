@@ -15,3 +15,6 @@ tasks:
       gp sync-await mybuild
       yarn install
       yarn start
+vscode:
+  extensions:
+    - Orta.vscode-jest
