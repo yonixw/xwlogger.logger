@@ -98,14 +98,18 @@ export const fastdate = (time: number | Date): string => {
 };
 
 // print last lines from error  stacktrace
-export const stacktrace = (stack: string, lines: number): string[] => {
-  const stacklist = stack
-    .split("\n")
-    .map((line) => line.replace(/^\s*at\s*/, ""));
-  const start = Math.max(stacklist.length - lines, 0);
-  const end = stacklist.length;
-  const stacktrace = stacklist.slice(start, end);
-  return stacktrace;
+export const stacktrace = (stack?: string[], lines: number = 10): string => {
+  if (!stack) {
+    stack = (new Error().stack || "").split("\n");
+    if (stack.length > 2) {
+      stack = stack.slice(2, stack.length - 1); // Error + this func
+    }
+  }
+
+  const stacklist = stack.map((line) => line.replace(/^\s*at\s*/, ""));
+
+  const stacktrace = stacklist.slice(0, lines);
+  return stacktrace.join("\n");
 };
 
 // show last n chars at the end of astring with elipsis
@@ -147,19 +151,36 @@ export const lineNumber = (astring: string): string => {
   return lineText;
 };
 
+const sortASC = (a: number, b: number) => a - b;
+const sortDESC = (a: number, b: number) => b - a;
+
 // replace secrets in string from shortest to longest
 export const replaceSecrets = (
   astring: string,
   secrets: string[],
   replace = "*xENV*"
 ): string => {
-  const len = secrets.length;
-  const secret = secrets.map((secret) => {
-    const regex = new RegExp(secret, "g");
-    const replaced = astring.replace(regex, replace);
-    return replaced;
+  const regexes = secrets
+    .filter((e) => e.split(";").length === 3 && e.startsWith("r;"))
+    .map((e) => {
+      let rx = e.split(";");
+      return { order: parseInt(rx[1]) || 0, regx: rx[2] };
+    })
+    .sort((a, b) => sortASC(a.order, b.order));
+
+  const texts = secrets
+    .filter((e) => e.split(";").length !== 3 || !e.startsWith("r;"))
+    .sort((a, b) => sortDESC(a.length, b.length));
+
+  let replaced = astring;
+  regexes.map((rgx) => {
+    const regex = new RegExp(rgx.regx, "ig");
+    replaced = replaced.replace(regex, replace);
   });
-  const replaced = secret.reduce((a, b) => a);
+  texts.map((secret) => {
+    const regex = new RegExp(secret, "ig");
+    replaced = replaced.replace(regex, replace);
+  });
   return replaced;
 };
 

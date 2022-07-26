@@ -7,6 +7,7 @@ import {
   fullISODate,
   lineNumber,
   replaceSecrets,
+  stacktrace,
 } from "./base";
 
 describe("Meta base utils", () => {
@@ -110,9 +111,32 @@ describe("Meta base utils", () => {
   });
 
   test("replace env", () => {
-    const input = "sec1 secret2 sEcReT3";
+    const input = "sec1 secret2 sEcReT3 00001111secretsecretsecret";
 
-    replaceSecrets(input, ["sec"], "XYZ");
+    expect(replaceSecrets(input, ["sec"], "*").indexOf("sEcReT")).toBe(-1);
+    expect(replaceSecrets(input, ["sec"], "*").indexOf("*1")).toBeGreaterThan(
+      -1
+    );
+    expect(
+      replaceSecrets(input, ["sec"], "*").indexOf("*ret2")
+    ).toBeGreaterThan(-1);
+
+    // Replace big before small
+    expect(replaceSecrets(input, ["sec", "secret"], "*").indexOf("*ret2")).toBe(
+      -1
+    );
+    expect(replaceSecrets(input, ["sec", "secret"], "*").indexOf("*ReT3")).toBe(
+      -1
+    );
+
+    // replace with regex, with priority, before any text even if bigger
+    expect(
+      replaceSecrets(input, [
+        "secretsecretsecret",
+        "r;0;0.+t",
+        "r;1;0+",
+      ]).indexOf("00001111")
+    ).toBe(-1);
   });
 
   test("line numbers", () => {
@@ -125,5 +149,17 @@ describe("Meta base utils", () => {
       const line = resultLines[i];
       expect(line.indexOf("" + (i + 1))).toBeGreaterThan(-1);
     }
+  });
+
+  test("stacktrace", () => {
+    const stack = stacktrace().split("\n");
+    expect(stack.length).toBeLessThanOrEqual(10);
+    expect(stack[0].indexOf("test.ts")).toBeGreaterThan(0);
+
+    // If we give our own, extra line of "Error:"
+    const stackList2 = stacktrace((new Error().stack || "").split("\n")).split(
+      "\n"
+    );
+    expect(stackList2[1].indexOf("test.ts")).toBeGreaterThan(0);
   });
 });
