@@ -148,11 +148,14 @@ export const lineNumber = (astring: string): string => {
 };
 
 // replace secrets in string from shortest to longest
-export const replaceSecrets = (astring: string, secrets: string[]): string => {
+export const replaceSecrets = (
+  astring: string,
+  secrets: string[],
+  replace = "*xENV*"
+): string => {
   const len = secrets.length;
   const secret = secrets.map((secret) => {
     const regex = new RegExp(secret, "g");
-    const replace = "***ENV***";
     const replaced = astring.replace(regex, replace);
     return replaced;
   });
@@ -162,6 +165,7 @@ export const replaceSecrets = (astring: string, secrets: string[]): string => {
 
 /*
 Eval args:
+- check only "azAZ09_-" in param name
 cc = 
   (a,b,c)=>
   console.log(

@@ -5,6 +5,8 @@ import {
   fastdate,
   fasttime,
   fullISODate,
+  lineNumber,
+  replaceSecrets,
 } from "./base";
 
 describe("Meta base utils", () => {
@@ -93,6 +95,35 @@ describe("Meta base utils", () => {
         expect(result.startsWith(expectedUTC[i])).toBe(false);
         expect(resultUTC.startsWith(expectedUTC[i])).toBe(true);
       }
+    }
+  });
+
+  test("fast time compose", () => {
+    const d = new Date();
+    const dt = d.getTime();
+    expect(fastdate(d) + "T" + fasttime(d)).toBe(
+      fullISODate({ d, utc: false })
+    );
+    expect(fastdate(dt) + "T" + fasttime(dt)).toBe(
+      fullISODate({ d, utc: false })
+    );
+  });
+
+  test("replace env", () => {
+    const input = "sec1 secret2 sEcReT3";
+
+    replaceSecrets(input, ["sec"], "XYZ");
+  });
+
+  test("line numbers", () => {
+    const input = "LineX\nLineY";
+    const result = lineNumber(input);
+
+    const resultLines = result.split("\n");
+    expect(resultLines.length).toBe(input.split("\n").length);
+    for (let i = 0; i < resultLines.length; i++) {
+      const line = resultLines[i];
+      expect(line.indexOf("" + (i + 1))).toBeGreaterThan(-1);
     }
   });
 });
