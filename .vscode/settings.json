@@ -6,6 +6,7 @@
         }
     ],
     "jest.jestCommandLine": "./node_modules/.bin/jest",
+    "jest.showCoverageOnLoad": true,
     "jest.rootPath": "./lib/"
     
 }
