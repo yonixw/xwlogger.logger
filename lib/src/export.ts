@@ -16,4 +16,8 @@ export {
   stacktrace,
 } from "./modifiers/base";
 
+export { metamodifiers as METAMETA } from "./modifiers/base";
+
 export { XWLogger } from "./logger";
+
+// @todo: Use classes to organize, and no "const arrow funcs", better for docs
