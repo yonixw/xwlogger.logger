@@ -71,7 +71,7 @@ describe("Meta base utils", () => {
     ];
 
     for (let i = 0; i < dates.length; i++) {
-      const result = fullISODate({ d: dates[i] });
+      const result = fullISODate({ d: dates[i], utc: false });
       expect(result.startsWith(expected[i])).toBe(true);
     }
   });
@@ -87,8 +87,12 @@ describe("Meta base utils", () => {
       const result = fullISODate({ d: datesUTC[i], utc: false });
       const resultUTC = fullISODate({ d: datesUTC[i], utc: true });
 
-      expect(result.startsWith(expectedUTC[i])).toBe(false);
-      expect(resultUTC.startsWith(expectedUTC[i])).toBe(true);
+      if (new Date().getTimezoneOffset() === 0) {
+        expect(result).toBe(resultUTC);
+      } else {
+        expect(result.startsWith(expectedUTC[i])).toBe(false);
+        expect(resultUTC.startsWith(expectedUTC[i])).toBe(true);
+      }
     }
   });
 });
