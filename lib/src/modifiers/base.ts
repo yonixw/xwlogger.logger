@@ -23,7 +23,7 @@ export type MetaModifierItem = {
 };
 
 // pad string with zeros
-export const pad = (
+export const pad0 = (
   astring: string | number,
   n: number,
   char: string = "0"
@@ -36,7 +36,7 @@ export const pad = (
 };
 
 /**
- *
+ * Get full ISO date string
  * @param options utc - return in utc, otherwise return in local timezone
  * @returns ISO date string
  */
@@ -85,11 +85,15 @@ export function fullISODate(options?: {
   return date + "T" + time;
 }
 
-// human readable time
-export const fasttime = (time: number | Date): string => {
+/**
+ * human readable time
+ * @param time timestamp or Date
+ * @returns string
+ */
+export function fasttime(time: number | Date): string {
   const d = typeof time == "number" ? new Date(time) : time;
   return fullISODate({ d, showDate: false }).split("T")[1];
-};
+}
 
 // human readable date
 export const fastdate = (time: number | Date): string => {
@@ -146,7 +150,7 @@ export const ellipsisMid = (astring: string, n: number): string => {
 export const lineNumber = (astring: string): string => {
   const lines = astring.split("\n");
   const len = lines.length;
-  const line = lines.map((line, i) => `L#${pad(`${i + 1}`, 4)}) ${line}`);
+  const line = lines.map((line, i) => `L#${pad0(`${i + 1}`, 4)}) ${line}`);
   const lineText = line.join("\n");
   return lineText;
 };

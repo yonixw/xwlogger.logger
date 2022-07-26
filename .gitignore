@@ -1,3 +1,7 @@
 node_modules/
 dist/
 coverage/
+
+# api docs:
+temp/
+etc/

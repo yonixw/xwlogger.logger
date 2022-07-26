@@ -9,7 +9,10 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "test": "jest",
-    "postinstall": "node dist/postinstall.js"
+    "postinstall": "node dist/postinstall.js",
+    "docs:prepare": "tsc && npx @microsoft/api-extractor run --local --verbose",
+    "docs:convert": "npx @microsoft/api-documenter markdown -i ./temp -o ./etc",
+    "docs": "yarn docs:prepare && yarn docs:convert"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
