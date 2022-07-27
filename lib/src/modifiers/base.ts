@@ -17,10 +17,75 @@ export type metamodifiers =
   | "name.args" // not in arrow
   | "stack.top==" // @todo consider WebWorker case, need to be calc on log call side
   | "max.cols==";
-export type MetaModifierItem = {
-  modifier: metamodifiers;
-  extra: string | null;
-};
+
+/*
+[
+  [
+  "scope" , [
+      ['o0',['opt1',1,2,3]],
+      ['m0',['opt1',1,2,3]],
+    ]
+  ],
+  [
+  "scope" , [
+      ['o0',['opt1',1,2,3]],
+      ['m0',['opt1',1,2,3]],
+    ]
+  ],
+
+]
+
+*/
+
+export interface IModifier {
+  /**
+   * Key all keys of this modifier
+   * @returns Keys
+   * @example ["m0","modif.time"]
+   */
+  getKeys(): string[];
+
+  /**
+   * All optional options in order
+   * @returns Options
+   * @example ["maxLength","async"]
+   */
+  getOptions(): string[];
+
+  /**
+   * Get wrapper for pre-processing log
+   * @param options Options for the wrapper in an array form
+   */
+  getWrapper(options: Array<string | number>): (text: string) => string;
+}
+
+export class ModifierFastTime implements IModifier {
+  getKeys(): string[] {
+    return ["m0", "m.fast.time"];
+  }
+
+  getOptions(): string[] {
+    return [];
+  }
+
+  getWrapper(options: (string | number)[]): (text: string) => string {
+    return (text) => `${ModifierFastTime.fasttime(new Date())} ${text}`;
+  }
+
+  /**
+   * human readable time
+   * @param time timestamp or Date
+   * @returns string
+   */
+  static fasttime(time: number | Date): string {
+    const d = typeof time == "number" ? new Date(time) : time;
+    return fullISODate({ d, showDate: false }).split("T")[1];
+  }
+}
+
+const modifier = (() => {
+  return class {};
+})();
 
 // pad string with zeros
 export const pad0 = (
@@ -83,16 +148,6 @@ export function fullISODate(options?: {
   }
 
   return date + "T" + time;
-}
-
-/**
- * human readable time
- * @param time timestamp or Date
- * @returns string
- */
-export function fasttime(time: number | Date): string {
-  const d = typeof time == "number" ? new Date(time) : time;
-  return fullISODate({ d, showDate: false }).split("T")[1];
 }
 
 // human readable date

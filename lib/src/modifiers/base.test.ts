@@ -3,11 +3,11 @@ import {
   ellipsisMid,
   ellipsisStart,
   fastdate,
-  fasttime,
   fullISODate,
   lineNumber,
   replaceSecrets,
   stacktrace,
+  ModifierFastTime,
 } from "./base";
 
 describe("Meta base utils", () => {
@@ -102,10 +102,10 @@ describe("Meta base utils", () => {
   test("fast time compose", () => {
     const d = new Date();
     const dt = d.getTime();
-    expect(fastdate(d) + "T" + fasttime(d)).toBe(
+    expect(fastdate(d) + "T" + ModifierFastTime.fasttime(d)).toBe(
       fullISODate({ d, utc: false })
     );
-    expect(fastdate(dt) + "T" + fasttime(dt)).toBe(
+    expect(fastdate(dt) + "T" + ModifierFastTime.fasttime(dt)).toBe(
       fullISODate({ d, utc: false })
     );
   });
