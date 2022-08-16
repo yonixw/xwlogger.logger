@@ -18,3 +18,4 @@ tasks:
 vscode:
   extensions:
     - Orta.vscode-jest
+    - ms-vscode.live-server

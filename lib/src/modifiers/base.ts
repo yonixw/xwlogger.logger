@@ -1,3 +1,5 @@
+import { TypeOf, z, ZodError } from "zod";
+
 export type metamodifiers =
   | "gmt=="
   | "full.time"
@@ -17,6 +19,74 @@ export type metamodifiers =
   | "name.args" // not in arrow
   | "stack.top==" // @todo consider WebWorker case, need to be calc on log call side
   | "max.cols==";
+
+/*
+Split into: 
+  modifier_schemas.ts +
+  modifiers_targert_impl.ts +   // like colors for console
+    + tests (not for parsing... but remember .strict()!!! )
+  modifiers_caller_impl.ts      // like eval in place
+    + tests
+
+*/
+
+/**
+ * Specify count of parents to add to each log
+ */
+export interface StackTop_ByCount {
+  /** Parent count to add */
+  byCount: number;
+}
+export const StackTop_ByCountZod: z.ZodType<StackTop_ByCount> = z
+  .object({
+    byCount: z
+      .number()
+      .int({ message: "must be integer 1-10" })
+      .min(1, { message: "Must be bigger than 0" })
+      .max(10, { message: "Must be lower than 11" }),
+  })
+  .strict();
+
+/**
+ * Specify to add stack info
+ * @example Empty obj `{}`
+ */
+export interface StackTop_Auto {}
+export const StackTop_AutoZod: z.ZodType<StackTop_Auto> = z.object({}).strict();
+
+/**
+ * A modifier directive options
+ */
+export interface ModifiersDirectives {
+  /**
+   *  Add call stack info
+   */
+  topStack?: StackTop_ByCount | StackTop_Auto;
+}
+
+/** {@link ModifiersDirectives}  */
+export const ModifiersDirectivesZod: z.ZodType<ModifiersDirectives> = z
+  .object({
+    topStack: z.optional(StackTop_AutoZod.or(StackTop_ByCountZod)),
+  })
+  .strict();
+
+export function getStack(
+  json_string: string,
+  silent = false
+): ModifiersDirectives | null {
+  try {
+    return ModifiersDirectivesZod.parse(JSON.parse(json_string));
+  } catch (error: any) {
+    if (!silent) {
+      const _err = error as ZodError;
+      // todo json.parse if error=object error.message=string
+      // and in result array show last item.
+      console.error("Error parsing: ", error);
+    }
+    return null;
+  }
+}
 
 /*
 [
