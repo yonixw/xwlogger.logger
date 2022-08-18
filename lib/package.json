@@ -11,8 +11,8 @@
     "test": "jest",
     "postinstall": "node dist/postinstall.js",
     "doc:github": "echo https://microsoft.github.io/tsdoc/# https://github.com/microsoft/rushstack/issues OR https://github.com/Microsoft/tsdoc",
-    "docs:prepare": "tsc && mkdir -p ./etc && npx @microsoft/api-extractor run --local --verbose",
-    "docs:convert": "npx @microsoft/api-documenter markdown -i ./temp -o ./etc",
+    "docs:prepare": "tsc && mkdir -p ./etc && npx --yes @microsoft/api-extractor run --local --verbose",
+    "docs:convert": "npx --yes @microsoft/api-documenter markdown -i ./temp -o ./etc",
     "docs": "yarn docs:prepare && yarn docs:convert"
   },
   "devDependencies": {
