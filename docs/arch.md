@@ -9,7 +9,7 @@ Per scope relation of directives:
 - **Scope**: Like a log tag in Android, the task or job currently writing the log. To become runtime filters to get the latest configured logger. Helps apply configurations to scope patterns such as `*.myjob.*.childX` or for all scopes with the keyword `all`.
 - **Operations**: Per scope, where to get configuration (HTTP URL, Headers, etc) and other logging configurations that are unrelated to the data logged inside
 - **Targets**: Per the scope, where to log, and how (HTTP Headers, File path etc.)
-- **Modifiers**: Added functionality to enrich data or make it better viewed in the target. Like `eval` local variables or printing with console colors.
+- **Modifiers**: Added functionality to enrich data inside or make it better viewed in the target. Like `eval` local variables or printing with console colors.
 - **Query**: Functionality to reduce logs count like logging only the first 5 times inside a loop. Or using `random=0.XX` to get a percent of all running instances.
 
 Each block has defaults if not specified. And also a default logger with all default blocks for unspecified scopes.

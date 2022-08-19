@@ -8,7 +8,6 @@ import {
   replaceSecrets,
   stacktrace,
   ModifierFastTime,
-  getStack,
 } from "./base";
 
 describe("Meta base utils", () => {
@@ -162,13 +161,5 @@ describe("Meta base utils", () => {
       "\n"
     );
     expect(stackList2[1].indexOf("test.ts")).toBeGreaterThan(0);
-  });
-
-  test("zod test1", () => {
-    expect(getStack("{}")).not.toBe(null);
-    expect(getStack('{"topStack":{}}')).not.toBe(null);
-    expect(getStack('{"topStack":{"byCount":2}}')).not.toBe(null);
-
-    expect(getStack('{"topStack":{"XYZ":2}}', true)).toBe(null);
   });
 });

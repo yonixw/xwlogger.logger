@@ -1,17 +1,5 @@
 import { randomTag } from "./logger.utils";
 
-export enum LogLevels {
-  VERBOSE = 0,
-  LOG,
-  DEBUG,
-  INFO,
-  SUCESS,
-  FAIL,
-  WARN,
-  ERROR,
-  CRITICAL,
-}
-
 export enum ConfigSources {
   // Least to most dynamic
   CLI = 0,
