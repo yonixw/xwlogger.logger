@@ -136,21 +136,6 @@ export const fastdate = (time: number | Date): string => {
   return fullISODate({ d, showTime: false }).split("T")[0];
 };
 
-// print last lines from error  stacktrace
-export const stacktrace = (stack?: string[], lines: number = 10): string => {
-  if (!stack) {
-    stack = (new Error().stack || "").split("\n");
-    if (stack.length > 2) {
-      stack = stack.slice(2, stack.length - 1); // Error + this func
-    }
-  }
-
-  const stacklist = stack.map((line) => line.replace(/^\s*at\s*/, ""));
-
-  const stacktrace = stacklist.slice(0, lines);
-  return stacktrace.join("\n");
-};
-
 // show last n chars at the end of astring with elipsis
 export const ellipsisStart = (astring: string, n: number): string => {
   n = n - 3;

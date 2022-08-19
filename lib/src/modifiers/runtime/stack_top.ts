@@ -43,8 +43,27 @@ export const StackTop_AllArgsScheme = z.union([
   StackTop_Arg_Auto.scheme,
 ]);
 
+// print last lines from error  stacktrace
+export const stacktrace = (
+  stack?: string[],
+  lines: number = 10,
+  ignore = 2
+): string => {
+  if (!stack) {
+    stack = (new Error().stack || "").split("\n");
+    if (stack.length > ignore) {
+      stack = stack.slice(ignore, stack.length - 1); // Error + this func
+    }
+  }
+
+  const stacklist = stack.map((line) => line.replace(/^\s*at\s*/, ""));
+
+  const stacktrace = stacklist.slice(0, lines);
+  return stacktrace.join("\n");
+};
+
 async function addStack(log: LogItem, count: number) {
-  log.suffixs.push(new Error().stack || "stack is not available");
+  log.suffixs.push(stacktrace(undefined, count, 2));
 }
 
 export async function finalApplyStackTop(stackTop: Required<StackTop_AllArgs>) {
