@@ -1,6 +1,10 @@
-import { literal, TypeOf, z, ZodError } from "zod";
+import { literal, z } from "zod";
 import { LogItem, ProcessLogF } from "../../core/log_item";
 import { assertNever } from "../../utils/ts/unions";
+
+// =========================================
+// ============= [1/3] Argument Schems
+// =========================================
 
 /**
  * Specify count of parents to add to each log
@@ -18,7 +22,7 @@ export class StackTop_Arg_ByCount {
         .number()
         .int({ message: "Must be integer 1-10" })
         .min(1, { message: "Must be bigger than 0" })
-        .max(10, { message: "Must be lower than 11" }),
+        .max(100, { message: "Must be lower than 11" }),
     })
     .strict();
 }
@@ -43,28 +47,53 @@ export const StackTop_AllArgsScheme = z.union([
   StackTop_Arg_Auto.scheme,
 ]);
 
-// print last lines from error  stacktrace
+// =========================================
+// ============= [2/3] Core Code
+// =========================================
+
+/**
+ *  print last lines from error  stacktrace
+ * @param stack Give lines of your own, or empty for calculating
+ * @param linesToLoad Need to be big number since we filter it down
+ * @param ignore How much to ignore after filtering
+ * @param linesToReport How much to report after filter + ignore
+ * @returns
+ */
 export const stacktrace = (
   stack?: string[],
-  lines: number = 10,
-  ignore = 2
+  linesToLoad: number = 100,
+  ignore = 2,
+  linesToReport = 10
 ): string => {
+  let orgStack = stack || [];
   if (!stack) {
-    stack = (new Error().stack || "").split("\n");
-    if (stack.length > ignore) {
-      stack = stack.slice(ignore, stack.length - 1); // Error + this func
-    }
+    const _old_error_max = Error.stackTraceLimit;
+    Error.stackTraceLimit = linesToLoad;
+    orgStack = (new Error().stack || "").split("\n");
+    stack = orgStack
+      // Remove old es middlemans (for async etc...)
+      .filter((e) => !e.endsWith("<anonymous>)"))
+      .filter((e) => e.indexOf("Object.<anonymous>.__awaiter") == -1)
+      .filter((e) => e.indexOf(" (") > -1);
+    Error.stackTraceLimit = _old_error_max;
+  }
+  if (stack.length > ignore) {
+    stack = stack.slice(ignore, stack.length - 1); // Error + this func
   }
 
   const stacklist = stack.map((line) => line.replace(/^\s*at\s*/, ""));
 
-  const stacktrace = stacklist.slice(0, lines);
+  const stacktrace = stacklist.slice(0, linesToReport);
   return stacktrace.join("\n");
 };
 
 async function addStack(log: LogItem, count: number) {
-  log.suffixs.push(stacktrace(undefined, count, 2));
+  log.suffixs.push(stacktrace(undefined, 100, 2, count)); // remove the helpers, magic number because promises
 }
+
+// =========================================
+// ============= [3/3] Argument handling
+// =========================================
 
 export async function finalApplyStackTop(stackTop: Required<StackTop_AllArgs>) {
   let result: ProcessLogF = () => Promise.resolve();

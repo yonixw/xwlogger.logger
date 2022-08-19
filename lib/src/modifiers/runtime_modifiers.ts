@@ -25,7 +25,7 @@ export type metamodifiers =
   | "delta"
   | "parent.delta"
   | "eval.args==" // azAz_09 only
-  | "filename"
+  | "unsoppurted.filename" // NO! stack is really tricky to navigate... don't want to be liable to ES tricks
   | "name.args" // not in arrow
   | "stack.top=="; // @todo consider WebWorker case, need to be calc on log call side
 
