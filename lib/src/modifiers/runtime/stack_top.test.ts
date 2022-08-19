@@ -1,4 +1,5 @@
-import { LogItem, ProcessLogF } from "../../core/log_item";
+import { LogItem } from "../../core/log_item";
+import { ProcessLog_Mod_RuntimeF } from "../runtime_modifiers";
 import {
   finalApplyStackTop,
   StackTop_AllArgs,
@@ -6,7 +7,7 @@ import {
   stacktrace,
 } from "./stack_top";
 
-async function parentX(d: ProcessLogF, log: LogItem) {
+async function parentX(d: ProcessLog_Mod_RuntimeF, log: LogItem) {
   await d(log);
 }
 

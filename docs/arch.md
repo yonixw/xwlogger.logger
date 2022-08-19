@@ -10,7 +10,7 @@ Per scope relation of directives:
 - **Operations**: Per scope, where to get configuration (HTTP URL, Headers, etc.) and other logging configurations that are unrelated to the data logged inside
 - **Targets**: Per the scope, where to log, and how (HTTP Headers, File path etc.)
 - **Modifiers**: Added functionality to enrich data inside or make it better viewed in the target. Like `eval` local variables or printing with console colors.
-  * Sub types: `Content`, `Runtime` and `Targets`
+  - Sub types: `Content`, `Runtime` and `Targets`
 - **Query**: Functionality to reduce logs count like logging only the first 5 times inside a loop. Or using `random=0.XX` to get a percent of all running instances.
 
 Each block has defaults if not specified. And also a default logger with all default blocks for unspecified scopes.

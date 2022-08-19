@@ -1,71 +1,7 @@
-/*
-[
-  [
-  "scope" , [
-      ['o0',['opt1',1,2,3]],
-      ['m0',['opt1',1,2,3]],
-    ]
-  ],
-  [
-  "scope" , [
-      ['o0',['opt1',1,2,3]],
-      ['m0',['opt1',1,2,3]],
-    ]
-  ],
-
-]
-
-*/
-
-export interface IModifier {
-  /**
-   * Key all keys of this modifier
-   * @returns Keys
-   * @example ["m0","modif.time"]
-   */
-  getKeys(): string[];
-
-  /**
-   * All optional options in order
-   * @returns Options
-   * @example ["maxLength","async"]
-   */
-  getOptions(): string[];
-
-  /**
-   * Get wrapper for pre-processing log
-   * @param options Options for the wrapper in an array form
-   */
-  getWrapper(options: Array<string | number>): (text: string) => string;
+export function fasttime(time: number | Date): string {
+  const d = typeof time == "number" ? new Date(time) : time;
+  return fullISODate({ d, showDate: false }).split("T")[1];
 }
-
-export class ModifierFastTime implements IModifier {
-  getKeys(): string[] {
-    return ["m0", "m.fast.time"];
-  }
-
-  getOptions(): string[] {
-    return [];
-  }
-
-  getWrapper(options: (string | number)[]): (text: string) => string {
-    return (text) => `${ModifierFastTime.fasttime(new Date())} ${text}`;
-  }
-
-  /**
-   * human readable time
-   * @param time timestamp or Date
-   * @returns string
-   */
-  static fasttime(time: number | Date): string {
-    const d = typeof time == "number" ? new Date(time) : time;
-    return fullISODate({ d, showDate: false }).split("T")[1];
-  }
-}
-
-const modifier = (() => {
-  return class {};
-})();
 
 // pad string with zeros
 export const pad0 = (
@@ -134,36 +70,6 @@ export function fullISODate(options?: {
 export const fastdate = (time: number | Date): string => {
   const d = typeof time == "number" ? new Date(time) : time;
   return fullISODate({ d, showTime: false }).split("T")[0];
-};
-
-// show last n chars at the end of astring with elipsis
-export const ellipsisStart = (astring: string, n: number): string => {
-  n = n - 3;
-  const len = astring.length;
-  const start = Math.max(len - n, 0);
-  const end = len;
-  const ellipsis = "..." + astring.slice(start, end);
-  return ellipsis;
-};
-
-// show first n chars at the start of astring with elipsis
-export const ellipsisEnd = (astring: string, n: number): string => {
-  n = n - 3;
-  const len = astring.length;
-  const start = 0;
-  const end = Math.min(n, len);
-  const ellipsis = astring.slice(start, end) + "...";
-  return ellipsis;
-};
-
-// show middle n chars of astring with elipsis before and after
-export const ellipsisMid = (astring: string, n: number): string => {
-  n = n - 6;
-  const len = astring.length;
-  const start = Math.max(len - n, 0);
-  const end = len;
-  const ellipsis = "..." + astring.slice(start, end) + "...";
-  return ellipsis;
 };
 
 // add line number for multiline text

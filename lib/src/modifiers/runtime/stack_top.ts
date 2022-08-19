@@ -1,6 +1,7 @@
 import { literal, z } from "zod";
-import { LogItem, ProcessLogF } from "../../core/log_item";
+import { LogItem } from "../../core/log_item";
 import { assertNever } from "../../utils/ts/unions";
+import { ProcessLog_Mod_RuntimeF } from "../runtime_modifiers";
 
 // =========================================
 // ============= [1/3] Argument Schems
@@ -95,8 +96,10 @@ async function addStack(log: LogItem, count: number) {
 // ============= [3/3] Argument handling
 // =========================================
 
-export async function finalApplyStackTop(stackTop: Required<StackTop_AllArgs>) {
-  let result: ProcessLogF = () => Promise.resolve();
+export async function finalApplyStackTop(
+  stackTop: NonNullable<StackTop_AllArgs>
+) {
+  let result: ProcessLog_Mod_RuntimeF = () => Promise.resolve();
   switch (stackTop._) {
     case "top":
       result = (log: LogItem) => addStack(log, stackTop.byCount);
