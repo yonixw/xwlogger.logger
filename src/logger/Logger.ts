@@ -6,7 +6,7 @@ import { AnyDict, OptionalDictKeys } from "../utils/ts";
 import { randomUUID } from "crypto";
 
 const defaultConfig = {
-  tagID: randomUUID(),
+  tagID: "",
   output: "console",
 };
 
@@ -16,6 +16,9 @@ export class Logger {
 
   _set_config(config: AnyDict) {
     this._config = { ...defaultConfig, ...config };
+    if (!this._config.tagID) {
+      this._config.tagID = randomUUID();
+    }
     this._output = getOutput(this._config.output);
   }
 

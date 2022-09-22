@@ -21,11 +21,11 @@ export const LogLevelDesc: { [key in LogLevel]: string } = {
 export const LogLevelMini: { [key in LogLevel]: string } = {
   [LogLevel.Security]: "SECR",
   [LogLevel.Critical]: "CRIT",
-  [LogLevel.Error]: "ERR",
-  [LogLevel.Warn]: "WRN",
-  [LogLevel.Info]: "INF",
-  [LogLevel.Verbose]: "VRB",
-  [LogLevel.Debug]: "DBG",
+  [LogLevel.Error]: "EROR",
+  [LogLevel.Warn]: "WARN",
+  [LogLevel.Info]: "INFO",
+  [LogLevel.Verbose]: "VRBS",
+  [LogLevel.Debug]: "DEBG",
 };
 
 export interface LogMessage {
