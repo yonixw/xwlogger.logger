@@ -2,10 +2,11 @@
   "name": "@xwlogger/logger",
   "version": "1.0.0",
   "description": "My dream logger with some sugar and some punch",
-  "main": "dist/export.js",
   "license": "MIT",
   "private": false,
   "scripts": {
+    "start": "tsc && node  src/index.ts",
+    "start:watch": "nodemon -e ts --watch src src/index.ts",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "test": "jest",
@@ -18,11 +19,13 @@
     "@types/jest": "^28.1.6",
     "@types/node": "^18.6.1",
     "jest": "^28.1.3",
+    "nodemon": "^2.0.20",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
   "dependencies": {
+    "chalk": "^5.0.1",
     "zod": "^3.18.0"
   }
 }
