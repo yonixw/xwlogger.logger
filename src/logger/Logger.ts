@@ -32,11 +32,6 @@ export class Logger {
     this._output = getOutput(this._config.output);
   }
 
-  constructor(config: OptionalDictKeys<typeof defaultConfig> = defaultConfig) {
-    this._set_config(config);
-    this.__registerForGCCollect();
-  }
-
   __registerForGCCollect() {
     // The idea is to get all data into consts
     // so node don't need to keep ref to "this" and let GC collect it
@@ -66,6 +61,17 @@ export class Logger {
     });
   }
 
+  __upLogCount() {
+    if (loggerMeta[this._config.uuid])
+      loggerMeta[this._config.uuid].count =
+        (loggerMeta[this._config.uuid].count || 0) + 1;
+  }
+
+  constructor(config: OptionalDictKeys<typeof defaultConfig> = defaultConfig) {
+    this._set_config(config);
+    this.__registerForGCCollect();
+  }
+
   uuid() {
     return this._config.uuid;
   }
@@ -89,9 +95,17 @@ export class Logger {
     const _msg = this._build_msg(...msg);
     _msg.level = LogLevel.Info;
     this._output?.log(_msg);
-    if (loggerMeta[this._config.uuid])
-      loggerMeta[this._config.uuid].count =
-        (loggerMeta[this._config.uuid].count || 0) + 1;
+
+    this.__upLogCount();
+  }
+
+  l2(...msg: any[]) {
+    const extra = eval("ppp1");
+    const _msg = this._build_msg(...msg.concat(extra));
+    _msg.level = LogLevel.Info;
+    this._output?.log(_msg);
+
+    this.__upLogCount();
   }
 
   mini() {

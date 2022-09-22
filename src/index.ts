@@ -1,15 +1,31 @@
 import { Logger } from "./logger/Logger";
-import { listenGC } from "./logger/ShortLogger";
 import { addOutput } from "./outputs/output_registery";
 import { SimpleConsoleOutput } from "./outputs/simple_console";
 
-function logA() {
+function B(name: string) {
+  //console.log(eval("pp1"));
+  console.dir();
+}
+
+function A() {
+  const pp1 = 123;
+  B("123");
+  return pp1;
+}
+
+A();
+
+/* function logA() {
+  let ppp1 = 12344;
+
   let anchor: any | null = { a: 2 };
   let logger: Logger | null = new Logger({});
-  logger.l("Hi, Im in a function!");
+  logger.l2("Hi, Im in a function!");
   anchor = null;
+
+  return ppp1;
 }
-setTimeout(logA, 1 * 1000);
+setTimeout(logA, 1 * 1000); */
 
 let logger: Logger | null = new Logger({});
 

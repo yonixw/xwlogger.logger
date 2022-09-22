@@ -1,15 +1,13 @@
 export enum LogLevel {
-  Security = 0,
-  Critical = 1,
-  Error = 2,
-  Warn = 3,
-  Info = 4,
-  Verbose = 5,
-  Debug = 6,
+  Critical = 0, // Can not function at all (some assumption not true)
+  Error = 1,
+  Warn = 2, // Can cause error, watch out
+  Info = 3,
+  Verbose = 4, // For users
+  Debug = 5, // For developers
 }
 
 export const LogLevelDesc: { [key in LogLevel]: string } = {
-  [LogLevel.Security]: "Security",
   [LogLevel.Critical]: "Critical",
   [LogLevel.Error]: "Error",
   [LogLevel.Warn]: "Warn",
@@ -19,7 +17,6 @@ export const LogLevelDesc: { [key in LogLevel]: string } = {
 };
 
 export const LogLevelMini: { [key in LogLevel]: string } = {
-  [LogLevel.Security]: "SECR",
   [LogLevel.Critical]: "CRIT",
   [LogLevel.Error]: "EROR",
   [LogLevel.Warn]: "WARN",

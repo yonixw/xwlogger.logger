@@ -2,8 +2,9 @@
 // FinalizationRegistry is kinda complementry
 //           to WeakRef which comes undefined on GC
 
+// @ts-ignore
 const listener = new FinalizationRegistry((tag: any) => {
-  tag();
+  if (tag && typeof tag == "function") tag();
 });
 
 export function listenGC(obj: any, tag: any) {
