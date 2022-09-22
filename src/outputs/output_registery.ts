@@ -1,7 +1,7 @@
-import { BaseOutput } from "./base_output";
+import { OutputBase } from "./output_base";
 import { SimpleConsoleOutput } from "./simple_console";
 
-type outputInitFunc = () => BaseOutput;
+type outputInitFunc = () => OutputBase;
 
 const _all_outputs: { [key: string]: outputInitFunc } = {};
 

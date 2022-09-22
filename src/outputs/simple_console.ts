@@ -1,5 +1,5 @@
 import { LogLevelMini, LogMessage } from "../consts/logs";
-import { BaseOutput } from "./base_output";
+import { OutputBase } from "./output_base";
 import { AnyDict, OptionalDictKeys } from "../utils/ts";
 import chalk from "chalk";
 
@@ -8,7 +8,7 @@ const defaultConfig = {
   printJson: false,
 };
 
-export class SimpleConsoleOutput implements BaseOutput {
+export class SimpleConsoleOutput implements OutputBase {
   _config = defaultConfig;
 
   _set_config(config: AnyDict) {

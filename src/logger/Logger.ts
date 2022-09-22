@@ -1,5 +1,5 @@
 import { LogLevel, LogMessage } from "../consts/logs";
-import { BaseOutput } from "../outputs/base_output";
+import { OutputBase } from "../outputs/output_base";
 import { getOutput } from "../outputs/output_registery";
 import { SimpleConsoleOutput } from "../outputs/simple_console";
 import { AnyDict, OptionalDictKeys } from "../utils/ts";
@@ -12,7 +12,7 @@ const defaultConfig = {
 
 export class Logger {
   _config = defaultConfig;
-  _output?: BaseOutput;
+  _output?: OutputBase;
 
   _set_config(config: AnyDict) {
     this._config = { ...defaultConfig, ...config };
