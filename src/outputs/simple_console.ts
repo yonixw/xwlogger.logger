@@ -24,19 +24,23 @@ export class SimpleConsoleOutput implements OutputBase {
       console.log(JSON.stringify(msg));
     } else {
       if (this._config.useColor) {
-        console.log(
-          (msg.prefixes?.map((e) => `[${e}]`) || [])
-            .concat([`[${LogLevelMini[msg.level]}]`])
-            .concat([chalk.yellow(msg.message)])
-            .join(" ")
-        );
+        const baseline = (msg.prefixes?.map((e) => `[${e}]`) || [])
+          .concat([`[${LogLevelMini[msg.level]}]`])
+          .concat([chalk.yellow(msg.message)])
+          .join(" ");
+        const extras =
+          msg.extras
+            ?.map((e, i) => `\  ${chalk.underline(i)}. ${e}`)
+            .join("\n") || "";
+        console.log(baseline, extras ? "\n" + extras : "");
       } else {
-        console.log(
-          (msg.prefixes?.map((e) => `[${e}]`) || [])
-            .concat([`[${LogLevelMini[msg.level]}]`])
-            .concat([msg.message])
-            .join(" ")
-        );
+        const baseline = (msg.prefixes?.map((e) => `[${e}]`) || [])
+          .concat([`[${LogLevelMini[msg.level]}]`])
+          .concat([msg.message])
+          .join(" ");
+        const extras =
+          msg.extras?.map((e, i) => `\  ${i}. ${e}`).join("\n") || "";
+        console.log(baseline, extras ? "\n" + extras : "");
       }
     }
   }
