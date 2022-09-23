@@ -55,7 +55,7 @@ export class Logger {
       const extra = ctx_getLoggerLogCount();
       ctx_msg.extras = (ctx_msg.extras || []).concat([
         `Log count: ${extra.count}`,
-        `Start time: ${extra.start}`,
+        `Start time: ${extra.start?.toISOString()}`,
       ]);
       ctx_output?.log(ctx_msg);
     });
