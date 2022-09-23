@@ -2,18 +2,11 @@ import { Logger } from "./logger/Logger";
 import { addOutput } from "./outputs/output_registery";
 import { SimpleConsoleOutput } from "./outputs/simple_console";
 
-function B(name: string) {
-  //console.log(eval("pp1"));
-  console.dir();
-}
-
-function A() {
-  const pp1 = 123;
-  B("123");
-  return pp1;
-}
-
-A();
+const laser = (strings: TemplateStringsArray, ...values: any[]) => {
+  console.log({ strings, values });
+  return String.raw({ raw: strings }, ...values);
+};
+console.log(laser`Hi ${2 + 3}! and ${"also"} this`);
 
 /* function logA() {
   let ppp1 = 12344;
