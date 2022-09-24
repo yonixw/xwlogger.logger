@@ -27,7 +27,7 @@ function _get_stack_item(stack: string, i: number) {
   //    need tsconfig "inlineSourceMap" + node flag --enable-source-maps
   const lines = stack.split("\n").filter((e) => /^\s+at/.test(e));
   if (lines.length < i) return "";
-  const path = lines[i].replace(/\s+at/, "").replace(startPath, "");
+  const path = lines[i].replace(/\s+at\s*/, "").replace(startPath, "");
   return path;
 }
 
@@ -102,35 +102,43 @@ export class Logger {
     };
   }
 
-  _log_msg(lvl: LogLevel, ...msg: any[]) {
+  _log_msg(lvl: LogLevel, stackLevel: number, ...msg: any[]) {
     const _msg = this._build_msg(lvl, ...msg);
     _msg.extras = (_msg.extras || []).concat([
-      _get_stack_item(new Error().stack || "", 2),
+      _get_stack_item(new Error().stack || "", stackLevel),
     ]);
     this._output?.log(_msg);
     this.__upLogCount();
   }
 
+  _log_tag(lvl: LogLevel, strings: TemplateStringsArray, ...values: any[]) {
+    this._log_msg(lvl, 3, String.raw({ raw: strings }, ...values));
+  }
+
+  log(...msg: any[]) {
+    this._log_msg(LogLevel.Info, 2, ...msg);
+  }
+
   c(...msg: any[]) {
-    this._log_msg(LogLevel.Critical, ...msg);
+    this._log_msg(LogLevel.Critical, 2, ...msg);
   }
   e(...msg: any[]) {
-    this._log_msg(LogLevel.Error, ...msg);
+    this._log_msg(LogLevel.Error, 2, ...msg);
   }
   w(...msg: any[]) {
-    this._log_msg(LogLevel.Warn, ...msg);
+    this._log_msg(LogLevel.Warn, 2, ...msg);
   }
   i(...msg: any[]) {
-    this._log_msg(LogLevel.Info, ...msg);
+    this._log_msg(LogLevel.Info, 2, ...msg);
   }
   l(...msg: any[]) {
-    this._log_msg(LogLevel.Info, ...msg);
+    this._log_msg(LogLevel.Info, 2, ...msg);
   }
   v(...msg: any[]) {
-    this._log_msg(LogLevel.Verbose, ...msg);
+    this._log_msg(LogLevel.Verbose, 2, ...msg);
   }
   d(...msg: any[]) {
-    this._log_msg(LogLevel.Debug, ...msg);
+    this._log_msg(LogLevel.Debug, 2, ...msg);
   }
 
   mini() {
@@ -142,6 +150,25 @@ export class Logger {
     l = l.bind(this);
     v = v.bind(this);
     d = d.bind(this);
+    return { c, e, w, i, l, v, d };
+  }
+
+  micro() {
+    let { c, e, w, i, l, v, d } = this;
+    c = (strings: TemplateStringsArray, ...values: any[]) =>
+      this._log_tag(LogLevel.Critical, strings, ...values);
+    e = (strings: TemplateStringsArray, ...values: any[]) =>
+      this._log_tag(LogLevel.Error, strings, ...values);
+    w = (strings: TemplateStringsArray, ...values: any[]) =>
+      this._log_tag(LogLevel.Warn, strings, ...values);
+    i = (strings: TemplateStringsArray, ...values: any[]) =>
+      this._log_tag(LogLevel.Info, strings, ...values);
+    l = (strings: TemplateStringsArray, ...values: any[]) =>
+      this._log_tag(LogLevel.Info, strings, ...values);
+    v = (strings: TemplateStringsArray, ...values: any[]) =>
+      this._log_tag(LogLevel.Verbose, strings, ...values);
+    d = (strings: TemplateStringsArray, ...values: any[]) =>
+      this._log_tag(LogLevel.Debug, strings, ...values);
     return { c, e, w, i, l, v, d };
   }
 }

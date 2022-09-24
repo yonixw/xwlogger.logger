@@ -2,12 +2,6 @@ import { Logger } from "./logger/Logger";
 import { addOutput } from "./outputs/output_registery";
 import { SimpleConsoleOutput } from "./outputs/simple_console";
 
-const laser = (strings: TemplateStringsArray, ...values: any[]) => {
-  console.log({ strings, values });
-  return String.raw({ raw: strings }, ...values);
-};
-console.log(laser`Hi ${2 + 3}! and ${"also"} this`);
-
 let logger: Logger | null = new Logger({});
 
 logger = new Logger({ output: "console22" });
@@ -20,11 +14,13 @@ c("Critical info!");
 logger.c("Ciritical FULL");
 
 function B() {
-  l("At B!");
+  let logger = new Logger({ output: "console-color" });
+  const { c, e, w, i, l, v, d } = logger.micro();
+  c`This is an example error of ${1 + 2}`;
 }
 
 function A() {
-  l("At A!");
+  l("At A!", {}, [1, 2, 3]);
   B();
 }
 
