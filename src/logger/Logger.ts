@@ -20,6 +20,16 @@ const loggerMeta: { [key: string]: LogMeta } = {
   // External to be available after GC
 };
 
+const startPath = process.cwd();
+function _get_stack_item(stack: string, i: number) {
+  const lines = stack.split("\n");
+  if (lines.length < i) return "";
+  const splitPath = lines[i].split(/[\(\)]/g);
+  if (splitPath.length < 1) return "Anonymouse";
+  const path = splitPath[1].replace(startPath, "");
+  return path;
+}
+
 export class Logger {
   _config = defaultConfig;
   _output?: OutputBase;
@@ -50,7 +60,7 @@ export class Logger {
       };
     }
     const ctx_output = this._output;
-    const ctx_msg = this._build_msg("Logger scope closed");
+    const ctx_msg = this._build_msg(LogLevel.Info, "Logger scope closed");
     listenGC(this, () => {
       const extra = ctx_getLoggerLogCount();
       ctx_msg.extras = (ctx_msg.extras || []).concat([
@@ -80,37 +90,57 @@ export class Logger {
     return new Logger(this._config);
   }
 
-  _build_msg(...msg: any[]): LogMessage {
+  _build_msg(lvl: LogLevel, ...msg: any[]): LogMessage {
     // Todo add modifiers here...
     return {
       extras: msg.slice(1),
-      level: LogLevel.Info,
+      level: lvl,
       message: msg[0],
       prefixes: [this._config.uuid.split("-")[0]],
       tagID: this._config.uuid,
     };
   }
 
-  l(...msg: any[]) {
-    const _msg = this._build_msg(...msg);
-    _msg.level = LogLevel.Info;
+  _log_msg(lvl: LogLevel, ...msg: any[]) {
+    const _msg = this._build_msg(lvl, ...msg);
+    _msg.extras = (_msg.extras || []).concat([
+      _get_stack_item(new Error().stack || "", 3),
+    ]);
     this._output?.log(_msg);
-
     this.__upLogCount();
   }
 
-  l2(...msg: any[]) {
-    const extra = eval("ppp1");
-    const _msg = this._build_msg(...msg.concat(extra));
-    _msg.level = LogLevel.Info;
-    this._output?.log(_msg);
-
-    this.__upLogCount();
+  c(...msg: any[]) {
+    this._log_msg(LogLevel.Critical, ...msg);
+  }
+  e(...msg: any[]) {
+    this._log_msg(LogLevel.Error, ...msg);
+  }
+  w(...msg: any[]) {
+    this._log_msg(LogLevel.Warn, ...msg);
+  }
+  i(...msg: any[]) {
+    this._log_msg(LogLevel.Info, ...msg);
+  }
+  l(...msg: any[]) {
+    this._log_msg(LogLevel.Info, ...msg);
+  }
+  v(...msg: any[]) {
+    this._log_msg(LogLevel.Verbose, ...msg);
+  }
+  d(...msg: any[]) {
+    this._log_msg(LogLevel.Debug, ...msg);
   }
 
   mini() {
-    return {
-      l: this.l.bind(this),
-    };
+    let { c, e, w, i, l, v, d } = this;
+    c = c.bind(this);
+    e = e.bind(this);
+    w = w.bind(this);
+    i = i.bind(this);
+    l = l.bind(this);
+    v = v.bind(this);
+    d = d.bind(this);
+    return { c, e, w, i, l, v, d };
   }
 }

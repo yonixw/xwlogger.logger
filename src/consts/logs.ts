@@ -30,5 +30,5 @@ export interface LogMessage {
   level: LogLevel;
   message: string;
   prefixes: string[] | null;
-  extras: string[] | null;
+  extras: any[] | null;
 }

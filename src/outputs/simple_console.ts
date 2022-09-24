@@ -1,11 +1,26 @@
-import { LogLevelMini, LogMessage } from "../consts/logs";
+import { LogLevel, LogLevelMini, LogMessage } from "../consts/logs";
 import { OutputBase } from "./output_base";
 import { AnyDict, OptionalDictKeys } from "../utils/ts";
-import chalk from "chalk";
+import chalk, { Chalk } from "chalk";
 
 const defaultConfig = {
   useColor: false,
   printJson: false,
+};
+
+export const LogLevelColor: { [key in LogLevel]: Chalk } = {
+  [LogLevel.Critical]: chalk.red.bold,
+  [LogLevel.Error]: chalk.red,
+  [LogLevel.Warn]: chalk.yellow,
+  [LogLevel.Info]: chalk.white,
+  [LogLevel.Verbose]: chalk.bgGreen.black,
+  [LogLevel.Debug]: chalk.greenBright,
+};
+
+const miniLevelTxt = (lvl: LogLevel, color: boolean = false) => {
+  const lvlText = "[" + LogLevelMini[lvl] + "]";
+  const _cc_color = LogLevelColor[lvl];
+  return color ? _cc_color(lvlText) : lvlText;
 };
 
 export class SimpleConsoleOutput implements OutputBase {
@@ -25,8 +40,7 @@ export class SimpleConsoleOutput implements OutputBase {
     } else {
       if (this._config.useColor) {
         const baseline = (msg.prefixes?.map((e) => `[${e}]`) || [])
-          .concat([`[${LogLevelMini[msg.level]}]`])
-          .concat([chalk.yellow(msg.message)])
+          .concat([miniLevelTxt(msg.level, true), msg.message])
           .join(" ");
         const extras =
           msg.extras
@@ -35,8 +49,7 @@ export class SimpleConsoleOutput implements OutputBase {
         console.log(baseline, extras ? "\n" + extras : "");
       } else {
         const baseline = (msg.prefixes?.map((e) => `[${e}]`) || [])
-          .concat([`[${LogLevelMini[msg.level]}]`])
-          .concat([msg.message])
+          .concat([miniLevelTxt(msg.level), msg.message])
           .join(" ");
         const extras =
           msg.extras?.map((e, i) => `\  ${i}. ${e}`).join("\n") || "";

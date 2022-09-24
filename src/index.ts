@@ -8,18 +8,6 @@ const laser = (strings: TemplateStringsArray, ...values: any[]) => {
 };
 console.log(laser`Hi ${2 + 3}! and ${"also"} this`);
 
-/* function logA() {
-  let ppp1 = 12344;
-
-  let anchor: any | null = { a: 2 };
-  let logger: Logger | null = new Logger({});
-  logger.l2("Hi, Im in a function!");
-  anchor = null;
-
-  return ppp1;
-}
-setTimeout(logA, 1 * 1000); */
-
 let logger: Logger | null = new Logger({});
 
 logger = new Logger({ output: "console22" });
@@ -27,11 +15,27 @@ logger.l("Hi!");
 
 addOutput("console-color", () => new SimpleConsoleOutput({ useColor: true }));
 logger = new Logger({ output: "console-color" });
-logger.l("Hi!");
+const { c, e, w, i, l, v, d } = logger.mini();
+c("Critical info!");
+logger.c("Ciritical FULL");
 
-logger.l("Hi!", "some other", "object");
+function B() {
+  l("At B!");
+}
 
-const { l } = new Logger({ output: "console-color" }).mini();
-l("Hello", 2);
+function A() {
+  l("At A!");
+  B();
+}
 
-setTimeout(() => console.log("done"), 25 * 1000);
+A();
+
+/* setInterval(() => {
+  console.log(
+    "Terminal size: " +
+      (process.stdout.columns || 40) +
+      "x" +
+      (process.stdout.rows || 40)
+  );
+}, 5000);
+ */
