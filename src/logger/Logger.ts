@@ -7,11 +7,14 @@ import { randomUUID } from "crypto";
 import { listenGC } from "./ShortLogger";
 import { ModRuntimeBase } from "../modifiers/runtime/mod_runtime_base";
 import { getModRuntime } from "../modifiers/runtime/mod_runtime_registry";
+import { ModContentBase } from "../modifiers/content/mod_content_base";
+import { getModContent } from "../modifiers/content/mod_content_registry";
 
 const defaultConfig = {
   uuid: "",
   output: "console",
   runtimeModifiers: ["stackline"],
+  contentModifiers: ["timeshort"],
 };
 
 type LogMeta = {
@@ -27,6 +30,7 @@ export class Logger {
   _config = defaultConfig;
   _output?: OutputBase;
   _runtimeModifiers: ModRuntimeBase[] = [];
+  _contentModifiers: ModContentBase[] = [];
 
   _set_config(config: AnyDict) {
     this._config = { ...defaultConfig, ...config };
@@ -37,6 +41,10 @@ export class Logger {
     this._config.runtimeModifiers?.forEach((e) => {
       if (!e) return;
       this._runtimeModifiers.push(getModRuntime(e));
+    });
+    this._config.contentModifiers?.forEach((e) => {
+      if (!e) return;
+      this._contentModifiers.push(getModContent(e));
     });
   }
 
@@ -104,6 +112,7 @@ export class Logger {
 
     const _msg = this._build_msg(lvl, ...msg);
     this._runtimeModifiers.forEach((r) => r.enrich(_msg, runtimeMeta));
+    this._contentModifiers.forEach((r) => r.enrich(_msg));
     this._output?.log(_msg);
     this.__upLogCount();
   }

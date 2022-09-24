@@ -39,8 +39,11 @@ export class SimpleConsoleOutput implements OutputBase {
       console.log(JSON.stringify(msg));
     } else {
       if (this._config.useColor) {
-        const baseline = (msg.prefixes?.map((e) => `[${e}]`) || [])
-          .concat([miniLevelTxt(msg.level, true), msg.message])
+        const baseline = [miniLevelTxt(msg.level, true)]
+          .concat(
+            msg.prefixes?.map((e) => chalk.underline.gray(`[${e}]`)) || []
+          )
+          .concat("\n  - " + msg.message)
           .join(" ");
         const extras =
           msg.extras
@@ -48,8 +51,9 @@ export class SimpleConsoleOutput implements OutputBase {
             .join("\n") || "";
         console.log(baseline, extras ? "\n" + extras : "");
       } else {
-        const baseline = (msg.prefixes?.map((e) => `[${e}]`) || [])
-          .concat([miniLevelTxt(msg.level), msg.message])
+        const baseline = [miniLevelTxt(msg.level, false)]
+          .concat(msg.prefixes?.map((e) => `[${e}]`) || [])
+          .concat("\n  - " + msg.message)
           .join(" ");
         const extras =
           msg.extras?.map((e, i) => `\  ${i + 1}. ${e}`).join("\n") || "";
