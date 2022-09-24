@@ -22,11 +22,12 @@ const loggerMeta: { [key: string]: LogMeta } = {
 
 const startPath = process.cwd();
 function _get_stack_item(stack: string, i: number) {
-  const lines = stack.split("\n");
+  // good for ts-node
+  // OR: tsc, if:
+  //    need tsconfig "inlineSourceMap" + node flag --enable-source-maps
+  const lines = stack.split("\n").filter((e) => /^\s+at/.test(e));
   if (lines.length < i) return "";
-  const splitPath = lines[i].split(/[\(\)]/g);
-  if (splitPath.length < 1) return "Anonymouse";
-  const path = splitPath[1].replace(startPath, "");
+  const path = lines[i].replace(/\s+at/, "").replace(startPath, "");
   return path;
 }
 
@@ -104,7 +105,7 @@ export class Logger {
   _log_msg(lvl: LogLevel, ...msg: any[]) {
     const _msg = this._build_msg(lvl, ...msg);
     _msg.extras = (_msg.extras || []).concat([
-      _get_stack_item(new Error().stack || "", 3),
+      _get_stack_item(new Error().stack || "", 2),
     ]);
     this._output?.log(_msg);
     this.__upLogCount();
