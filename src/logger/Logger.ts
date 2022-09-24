@@ -5,10 +5,13 @@ import { SimpleConsoleOutput } from "../outputs/simple_console";
 import { AnyDict, OptionalDictKeys } from "../utils/ts";
 import { randomUUID } from "crypto";
 import { listenGC } from "./ShortLogger";
+import { ModRuntimeBase } from "../modifiers/runtime/mod_runtime_base";
+import { getModRuntime } from "../modifiers/runtime/mod_runtime_registry";
 
 const defaultConfig = {
   uuid: "",
   output: "console",
+  runtimeModifiers: ["stackline"],
 };
 
 type LogMeta = {
@@ -20,20 +23,10 @@ const loggerMeta: { [key: string]: LogMeta } = {
   // External to be available after GC
 };
 
-const startPath = process.cwd();
-function _get_stack_item(stack: string, i: number) {
-  // good for ts-node
-  // OR: tsc, if:
-  //    need tsconfig "inlineSourceMap" + node flag --enable-source-maps
-  const lines = stack.split("\n").filter((e) => /^\s+at/.test(e));
-  if (lines.length < i) return "";
-  const path = lines[i].replace(/\s+at\s*/, "").replace(startPath, "");
-  return path;
-}
-
 export class Logger {
   _config = defaultConfig;
   _output?: OutputBase;
+  _runtimeModifiers: ModRuntimeBase[] = [];
 
   _set_config(config: AnyDict) {
     this._config = { ...defaultConfig, ...config };
@@ -41,6 +34,10 @@ export class Logger {
       this._config.uuid = randomUUID();
     }
     this._output = getOutput(this._config.output);
+    this._config.runtimeModifiers?.forEach((e) => {
+      if (!e) return;
+      this._runtimeModifiers.push(getModRuntime(e));
+    });
   }
 
   __registerForGCCollect() {
@@ -102,43 +99,43 @@ export class Logger {
     };
   }
 
-  _log_msg(lvl: LogLevel, stackLevel: number, ...msg: any[]) {
+  _log_msg(lvl: LogLevel, stackLevelDelta: number, ...msg: any[]) {
+    const runtimeMeta = { stackIgnore: stackLevelDelta + 5 };
+
     const _msg = this._build_msg(lvl, ...msg);
-    _msg.extras = (_msg.extras || []).concat([
-      _get_stack_item(new Error().stack || "", stackLevel),
-    ]);
+    this._runtimeModifiers.forEach((r) => r.enrich(_msg, runtimeMeta));
     this._output?.log(_msg);
     this.__upLogCount();
   }
 
   _log_tag(lvl: LogLevel, strings: TemplateStringsArray, ...values: any[]) {
-    this._log_msg(lvl, 3, String.raw({ raw: strings }, ...values));
+    this._log_msg(lvl, 1, String.raw({ raw: strings }, ...values));
   }
 
   log(...msg: any[]) {
-    this._log_msg(LogLevel.Info, 2, ...msg);
+    this._log_msg(LogLevel.Info, 0, ...msg);
   }
 
   c(...msg: any[]) {
-    this._log_msg(LogLevel.Critical, 2, ...msg);
+    this._log_msg(LogLevel.Critical, 0, ...msg);
   }
   e(...msg: any[]) {
-    this._log_msg(LogLevel.Error, 2, ...msg);
+    this._log_msg(LogLevel.Error, 0, ...msg);
   }
   w(...msg: any[]) {
-    this._log_msg(LogLevel.Warn, 2, ...msg);
+    this._log_msg(LogLevel.Warn, 0, ...msg);
   }
   i(...msg: any[]) {
-    this._log_msg(LogLevel.Info, 2, ...msg);
+    this._log_msg(LogLevel.Info, 0, ...msg);
   }
   l(...msg: any[]) {
-    this._log_msg(LogLevel.Info, 2, ...msg);
+    this._log_msg(LogLevel.Info, 0, ...msg);
   }
   v(...msg: any[]) {
-    this._log_msg(LogLevel.Verbose, 2, ...msg);
+    this._log_msg(LogLevel.Verbose, 0, ...msg);
   }
   d(...msg: any[]) {
-    this._log_msg(LogLevel.Debug, 2, ...msg);
+    this._log_msg(LogLevel.Debug, 0, ...msg);
   }
 
   mini() {
