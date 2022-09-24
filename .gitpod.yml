@@ -1,18 +1,7 @@
 tasks:
-  - name: lib-build
-    openMode: split-right
+  - name: main
     openIn: right
     command: |
-      cd lib
-      yarn install
-      yarn build
-      yarn test
-      gp sync-done mybuild
-  - name: example-build
-    openIn: right
-    command: |
-      cd exampleapp-ts
-      gp sync-await mybuild
       yarn install
       yarn start
 vscode:

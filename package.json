@@ -5,8 +5,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "tsc && node  src/index.ts",
-    "start:watch": "nodemon -e ts --watch src src/index.ts",
+    "start": "tsc && node dist/index.js",
+    "start:watch": "nodemon -e ts --watch src/",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "test": "jest",
