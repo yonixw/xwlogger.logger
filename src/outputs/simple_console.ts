@@ -44,7 +44,7 @@ export class SimpleConsoleOutput implements OutputBase {
           .join(" ");
         const extras =
           msg.extras
-            ?.map((e, i) => `\  ${chalk.underline(i)}. ${e}`)
+            ?.map((e, i) => chalk.grey(`  ${chalk.underline(i + 1)}. ${e}`))
             .join("\n") || "";
         console.log(baseline, extras ? "\n" + extras : "");
       } else {
@@ -52,7 +52,7 @@ export class SimpleConsoleOutput implements OutputBase {
           .concat([miniLevelTxt(msg.level), msg.message])
           .join(" ");
         const extras =
-          msg.extras?.map((e, i) => `\  ${i}. ${e}`).join("\n") || "";
+          msg.extras?.map((e, i) => `\  ${i + 1}. ${e}`).join("\n") || "";
         console.log(baseline, extras ? "\n" + extras : "");
       }
     }
