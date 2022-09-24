@@ -112,34 +112,52 @@ export class Logger {
     this._log_msg(lvl, 1, String.raw({ raw: strings }, ...values));
   }
 
-  log(...msg: any[]) {
-    this._log_msg(LogLevel.Info, 0, ...msg);
-  }
-
   c(...msg: any[]) {
+    this._log_msg(LogLevel.Critical, 0, ...msg);
+  }
+  crit(...msg: any[]) {
     this._log_msg(LogLevel.Critical, 0, ...msg);
   }
   e(...msg: any[]) {
     this._log_msg(LogLevel.Error, 0, ...msg);
   }
+  error(...msg: any[]) {
+    this._log_msg(LogLevel.Error, 0, ...msg);
+  }
   w(...msg: any[]) {
+    this._log_msg(LogLevel.Warn, 0, ...msg);
+  }
+  warn(...msg: any[]) {
     this._log_msg(LogLevel.Warn, 0, ...msg);
   }
   i(...msg: any[]) {
     this._log_msg(LogLevel.Info, 0, ...msg);
   }
+  info(...msg: any[]) {
+    this._log_msg(LogLevel.Info, 0, ...msg);
+  }
   l(...msg: any[]) {
+    this._log_msg(LogLevel.Info, 0, ...msg);
+  }
+  log(...msg: any[]) {
     this._log_msg(LogLevel.Info, 0, ...msg);
   }
   v(...msg: any[]) {
     this._log_msg(LogLevel.Verbose, 0, ...msg);
   }
+  verbose(...msg: any[]) {
+    this._log_msg(LogLevel.Verbose, 0, ...msg);
+  }
   d(...msg: any[]) {
+    this._log_msg(LogLevel.Debug, 0, ...msg);
+  }
+  debug(...msg: any[]) {
     this._log_msg(LogLevel.Debug, 0, ...msg);
   }
 
   mini() {
-    let { c, e, w, i, l, v, d } = this;
+    let { c, e, w, i, l, v, d, crit, error, warn, info, log, verbose, debug } =
+      this;
     c = c.bind(this);
     e = e.bind(this);
     w = w.bind(this);
@@ -147,7 +165,29 @@ export class Logger {
     l = l.bind(this);
     v = v.bind(this);
     d = d.bind(this);
-    return { c, e, w, i, l, v, d };
+    crit = crit.bind(this);
+    error = error.bind(this);
+    warn = warn.bind(this);
+    info = info.bind(this);
+    log = log.bind(this);
+    verbose = verbose.bind(this);
+    debug = debug.bind(this);
+    return {
+      c,
+      e,
+      w,
+      i,
+      l,
+      v,
+      d,
+      crit,
+      error,
+      warn,
+      info,
+      log,
+      verbose,
+      debug,
+    };
   }
 
   micro() {
