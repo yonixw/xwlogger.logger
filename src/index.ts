@@ -26,6 +26,9 @@ function A() {
 
 A();
 
+// @todo: add tags->extras and filter by tags and kid\job of logger
+// @todo dynamic loggers and pointers to them Wrap->{selctor:Loggger}->Logger
+
 /* setInterval(() => {
   console.log(
     "Terminal size: " +
